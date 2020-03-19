@@ -16,9 +16,20 @@ To maximise the time spend on actual hands-on training in both languages, please
 * Install RStudio Desktop from [https://rstudio.com/products/rstudio/](https://rstudio.com/products/rstudio/)
 * Test the install by opening RStudio and typing:
 
-```{r}
+```r
 example(readline)
 ```
 
-### python
+### Python
+
+**Session 1:**
+
+* Install Anaconda for Python 3.7 from [https://www.anaconda.com/distribution](https://www.anaconda.com/distribution)
+* Launch “Spyder” and “Jupyter Notebook” from the Anaconda Navigator (Recommendation: install Kite if Spyder asks you whether you want to)
+* Run the following command in Spyder (bottom right) and Jupyter Notebook:
+
+```python
+import this
+```
+
 
