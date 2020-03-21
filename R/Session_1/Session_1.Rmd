@@ -1,0 +1,33 @@
+---
+title: "Session 1: R basic operations and data formats"
+author: "Nils"
+date: "`r Sys.Date()`"
+output: html_notebook
+---
+
+This R notebook based in the markdown and R language contains example code for the first session of the R course.
+Here, we will learn how to perform basic operations in R, get to know the different data formats and play around with the [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) package.
+
+# Variables and the assignment operator
+
+First, we will learn how to save a number (e.g. `12`) in a variable (e.g. `a`).
+For this, we will use the assignment operator `<-` (and not `=`).
+
+```{r example-variable}
+a <- 12
+a
+```
+
+The reason we don't use `=` is because it's reserved for setting parameters within a function call:
+
+```{r example-assignment}
+a <- c(1, 2, 3, 12)
+var(x = a)
+```
+
+However, `var(x <- a)` will also work, but it will generate an object `x`, which is equal to `a`.
+
+# Data types
+
+# Data 
+
