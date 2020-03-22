@@ -7,6 +7,10 @@ output: html_notebook
 
 This R notebook based in the markdown and R languages contains example code for the first session of the R course.
 Here, we will learn how to perform basic operations in R, get to know the different data formats and play around with the [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) package.
+It is important to understand where to get help. 
+The so called 'man page' for each function can be accessed via `?`.
+Type `?sum` to check it out.
+In general, when using unknown functions, it's good to read through the documentation first.
 
 # Variables and the assignment operator
 
@@ -234,7 +238,7 @@ a[3] <- 100
 a
 ```
 
-## `matrix`
+## `matrix` and `array`
 
 A matrix is a two-dimensional object containing `nrow` number of rows and `ncol` number of columns.
 
@@ -287,6 +291,14 @@ a[2,4]
 a[1:3,1:5]
 
 a[1:3,1:5] <- matrix(runif(15) + 10, ncol = 5, nrow = 3)
+a
+```
+
+An `array` is a three-dimensional matrix:
+
+```{r array}
+a <- array(data = runif(300), dim = c(10, 10, 3))
+dim(a)
 a
 ```
 
@@ -380,15 +392,153 @@ Factors will come in handy when using `ggplot2` later on.
 
 # Loops and the `if` statement
 
+In the next section, we will learn about loops and the `if` statement in R.
+
 ## `for` loop
+
+The `for` loop can be used to iteratively perform some task.
+Here is the lazy way of writing a for loop.
+
+```{r for}
+for(i in 1:10) print(i)
+```
+
+However, it is safer to write it like this:
+
+```{r for2}
+for(i in 1:10){
+ print(i)
+}
+```
+
+We have to use the `print` statement since variables are not displayed within loops.
+Let's write a loop with higher functionality:
+
+```{r for3}
+u1 <- rnorm(30)
+usq <- vector(mode = "numeric", length = 10)
+
+for(i in 1:10) {
+  usq[i] <- u1[i]*u1[i]
+}
+usq
+```
+
+For loops in R are very inefficient.
+Most of the time, simple operations can just be vectorized:
+
+```{r vectorized}
+usq1 <- u1[1:10]
+usq1 <- usq1*usq1
+
+all.equal(usq, usq1)
+```
 
 ## `apply`
 
+A better alternative for the `for` loop is `apply()` and all its derivatives (`sapply`, `vapply`, `mapply`, `tapply`).
+The main functions that we will discuss here are `lapply` and `sapply` for lists and vectors and `apply` for matrices (and arrays).
+
+`lapply` performs operations on each entry of a list:
+
+```{r lapply}
+a <- as.list(1:10)
+a
+
+# Doesn't work: a * 2
+a <- lapply(a, function(i){i * 2})
+a
+```
+
+`sapply` simplifies the output to a vector:
+
+```{r sapply}
+a <- sapply(a, function(i){i + 10})
+a
+```
+
+Here is another example:
+
+```{r sapply2}
+a <- list(A = 1:5, B = 6:10)
+sapply(a, sum)
+```
+
+The `apply` function can be applied to matrices.
+Here, `MARGIN` means the dimension to which the function is applied to (`1` meaning rows and `2` meaning columns).
+
+```{r apply}
+a <- matrix(data = runif(100), ncol = 10, nrow = 10)
+row.sum <- apply(X = a, MARGIN = 1, FUN = sum)
+col.sum <- apply(X = a, MARGIN = 2, FUN = sum)
+
+# Same result as rowSums and colSums
+all.equal(row.sum, rowSums(a))
+all.equal(col.sum, colSums(a))
+```
+
 ## `if`
 
-| || & &&
+The `if` statement is used for decision making:
+
+```{r if}
+a <- 42
+if(a > 0){
+  print(paste(a, "is a positive number")) 
+}
+```
+
+The `if` statement can be followed with an `else` option:
+
+```{r if-else}
+a <- -42
+if(a > 0){
+  print(paste(a, "is a positive number")) 
+} else {
+  print(paste(a, "is a negative number or 0")) 
+}
+```
+
+It is also possible to assess multiple statements at once.
+For this, we can use `|` (or better `||`) or `&` (or better `&&`).
+
+```{r logicals}
+a <- runif(100)
+
+# Finds all entries to a between 0.5 AND 0.7
+a[(a > 0.5) & (a < 0.7)]
+
+# This only tests the first argument
+(a > 0.5) && (a < 0.7)
+
+# Finds all entries smaller than 0.2 OR larger than 0.7
+a[(a < 0.2) | (a > 0.7)]
+
+# Tests only the first argument
+(a < 0.2) || (a > 0.7)
+```
+
+Now let's use it in the `if` statement.
+In `if` statements, it's better to use `||` instead of `|`.
+
+```{r if-logical}
+a <- "Hello"
+
+if(length(a) == 1L && is.character(a)){
+  print(paste(expression(a), "contains a character of length 1"))
+} else {
+  print(paste(expression(a), "does not contain a character of length 1"))
+}
+```
 
 ## `ifelse`
+
+To make decisions based on multiple checks, we can use the `ifelse` logic:
+
+```{r ifelse}
+a <- runif(100)
+ifelse((a > 0.5) & (a < 0.7), "Between 0.5 and 0.7", "Other")
+```
 
 # The `stats` package
 
