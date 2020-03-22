@@ -542,6 +542,50 @@ ifelse((a > 0.5) & (a < 0.7), "Between 0.5 and 0.7", "Other")
 
 # The `stats` package
 
-## Basic statistics
+The `stats` package contains most relvant statistical functions in R.
+It is included in the base installation in R and does not need to be loaded.
+We already used some `stats` functions above: `runif` and `rnorm`
 
-## "Advanced" statistics 
+We can use the stats package to generate random numbers:
+
+```{r random-numbers}
+# Uniform distribution
+runif(10)
+
+# Normal distribution
+rnorm(10)
+
+# Poisson distribution
+rpois(10, lambda = 2)
+```
+
+The package also provides a function for correlation testing:
+
+```{r correlation}
+# Set seed to get reproducible results
+set.seed(42)
+
+# Generate correlated data
+library(MASS)
+test.cor <- MASS::mvrnorm(10, mu = c(0, 0),
+                          Sigma = matrix(c(1, 0.67, 0.67, 1), nrow=2),
+                          empirical = TRUE)
+
+stats::cor(test.cor[,1], test.cor[,2])
+
+# Default method is pearson
+stats::cor.test(test.cor[,1], test.cor[,2])
+stats::cor.test(test.cor[,1], test.cor[,2], method = "spearman")
+```
+
+The stats package also provides a function to perform T tests and Wilcoxon rank tests:
+
+```{r tests}
+test.cor <- MASS::mvrnorm(10, mu = c(0, 2),
+                          Sigma = matrix(c(1, 0.67, 0.67, 1), nrow=2),
+                          empirical = TRUE)
+
+t.test(test.cor[,1], test.cor[,2])
+wilcox.test(test.cor[,1], test.cor[,2])
+wilcox.test(test.cor[,1], test.cor[,2], alternative = "less")
+```
