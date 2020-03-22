@@ -5,29 +5,197 @@ date: "`r Sys.Date()`"
 output: html_notebook
 ---
 
-This R notebook based in the markdown and R language contains example code for the first session of the R course.
+This R notebook based in the markdown and R languages contains example code for the first session of the R course.
 Here, we will learn how to perform basic operations in R, get to know the different data formats and play around with the [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) package.
 
 # Variables and the assignment operator
 
-First, we will learn how to save a number (e.g. `12`) in a variable (e.g. `a`).
+First, we will learn how to save a number (e.g. `42`) in a variable (e.g. `a`).
 For this, we will use the assignment operator `<-` (and not `=`).
 
 ```{r example-variable}
-a <- 12
+a <- 42
 a
 ```
 
 The reason we don't use `=` is because it's reserved for setting parameters within a function call:
 
 ```{r example-assignment}
-a <- c(1, 2, 3, 12)
+a <- c(1, 2, 3, 42)
 var(x = a)
 ```
 
 However, `var(x <- a)` will also work, but it will generate an object `x`, which is equal to `a`.
 
-# Data types
+# Data classes
 
-# Data 
+In R there are three basic data classes: `numeric`, `character` and `logical`.
 
+## `numeric`
+
+A number is of type `numeric`:
+
+```{r numeric}
+a <- 42
+class(a)
+is.numeric(a)
+```
+
+There are several different operations that can be performed on numeric values:
+
+```{r numeric-examples}
+# Addition
+a <- 1 + 1
+a
+
+# Division
+a <- 10/2
+a
+
+# Substraction
+a <- 10 - 2
+a
+
+# Multiplication
+a <- 10 * 2
+a
+```
+
+## `character`
+
+A string (e.g. a word) is of type `character`:
+
+```{r character}
+a <- "Hello"
+class(a)
+is.character(a)
+```
+
+Also a number of operations can be performed on characters:
+
+```{r character-examples}
+# Concatenate 1
+a <- paste("Hello", "world!")
+a
+
+# Concatenate 2
+a <- paste0("Hello", "world!")
+a
+
+# Splitting 1
+a <- strsplit("Hello world", split = " ")
+a
+
+# Splitting 2
+a <- strsplit(c("Hello world", "Test split"), split = " ")
+a
+
+# Grep
+a <- grep(pattern = "b", x = c("b", "bb", "a"))
+a
+
+a <- grep(pattern = "b", x = c("b", "bb", "a"), value = TRUE)
+a
+
+a <- grepl(pattern = "b", x = c("b", "bb", "a"))
+a
+
+# Substitute
+a <- sub(pattern = "b", replacement = "a", x = c("bba", "b", "c"))
+a
+
+a <- gsub(pattern = "b", replacement = "a", x = c("bba", "b", "c"))
+a
+
+# Quite useful
+a <- gsub(pattern = "_[0-9]", replacement = "", x = c("marker1_1", "marker2_2", "marker3_3"))
+a
+```
+
+## `logical`
+
+Logicals are either `TRUE` or `FALSE`:
+
+```{r logical}
+a <- TRUE
+class(a)
+is.logical(a)
+```
+
+They are commonly used when checking expressions or comparing objects.
+
+```{r logical-examples}
+a <- 42
+b <- 15
+c <- a > b
+c
+
+c <- a < b
+c
+```
+
+`TRUE` and `FALSE` can be abbreviated with `T` and `F`.
+However, this is dangerous since `T` and `F` can be overwitten:
+
+```{r T-and-F}
+T
+T <- 42
+T
+```
+
+Functions usually list what data types they operate on. 
+Have a lookt at the `sum` function by typing `?sum`.
+You will see that the function takes either numeric, complex or logical vectors.
+
+```{r sum-function}
+sum(c(1, 2, 3, 4))
+sum(c(TRUE, FALSE, TRUE))
+```
+
+## Coercion between data classes
+
+Coercion means the conversion of a variable from one data class to another:
+
+```{r coercion}
+a <- 42
+as.character(a)
+
+a <- "Hello"
+as.numeric(a)
+
+a <- TRUE
+as.numeric(a)
+
+a <- 1
+as.logical(a)
+```
+
+# Data containers
+
+## `vector`
+
+## `matrix`
+
+## `list`
+
+## `data.frame`
+
+## `factor`
+
+# Loops and the `if` statement
+
+## `for` loop
+
+## `apply`
+
+## `if`
+
+| || & &&
+
+## `ifelse`
+
+# The `stats` package
+
+## Basic statistics
+
+## "Advanced" statistics 
