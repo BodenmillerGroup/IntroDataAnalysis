@@ -170,17 +170,213 @@ a <- 1
 as.logical(a)
 ```
 
-# Data containers
+# Data objects
+
+Here, we will look at different ways of storing numeric, logical or character entries in objects.
 
 ## `vector`
 
+Vectors are objects that contain multiple entries.
+They can be created in different ways:
+
+```{r vector}
+a <- vector(mode = "numeric", length = 5)
+a
+length(a)
+class(a)
+is.vector(a)
+
+a <- c(0, 0, 0, 0, 0)
+a
+is.vector(a)
+
+a <- rep_len(0, length.out = 5)
+is.vector(a)
+
+a <- 1:5
+a
+is.vector(a)
+
+names(a) <- paste0("entry", a)
+a
+```
+
+A number of functions take vectors as inputs:
+
+```{r vector-functions}
+sum(a)
+var(a)
+sd(a)
+```
+
+Vector operations include:
+
+```{r vector-operations}
+a * 5
+a + 5
+a - 5
+a/5
+```
+
+Vectors can be subsetted as follows:
+
+```{r vector-subsetting}
+b <- a[3]
+b
+
+b <- a[c(2,3,4)]
+b
+
+b <- a[a > 2]
+b
+
+a[3] <- 100
+a
+```
+
 ## `matrix`
+
+A matrix is a two-dimensional object containing `nrow` number of rows and `ncol` number of columns.
+
+```{r matrix}
+a <- matrix(data = NA, nrow = 10, ncol = 10)
+a
+dim(a)
+nrow(a)
+ncol(a)
+colnames(a) <- paste("column", as.character(1:ncol(a)), sep = "_")
+rownames(a) <- paste("row", as.character(1:nrow(a)), sep = "_")
+is.matrix(a)
+a
+```
+
+Let's construct a matrix with numeric entries:
+
+```{r matrix-example}
+a <- matrix(data = runif(100), nrow = 10, ncol = 10)
+a
+```
+
+We can again perform matrix operations:
+
+```{r matrix-operations}
+a + 1
+a * 2
+a - 2
+a/10
+
+# Create a new vector
+b <- 1:10
+a * b
+
+a %*% b
+```
+
+There are a number of convenient functions for matrices:
+
+```{r matrix-functions}
+rowSums(a)
+colSums(a)
+sum(a)
+```
+
+Subsetting a matrix works as follows:
+
+```{r matrix-subsetting}
+a[2,4]
+a[1:3,1:5]
+
+a[1:3,1:5] <- matrix(runif(15) + 10, ncol = 5, nrow = 3)
+a
+```
 
 ## `list`
 
+A `list` can be constructed via the `list()` function:
+
+```{r list}
+a <- list(A = "test", B = 42)
+a
+is.list(a)
+names(a) <- c("C", "D")
+```
+
+A list is the most flexible data object:
+
+```{r list-examples}
+a <- list(A = c("test1", "test2"), B = 1:10, C = a)
+a
+```
+
+Subsetting can be performed as follows:
+
+```{r list-subsetting}
+a$A
+a[1]
+a[[1]]
+
+# Works
+a[1:2]
+
+# Doesn't work as expected
+a[[1:2]]
+
+is.list(a[1])
+is.list(a[[1]])
+```
+
+We see that `[` returns a `list` while `[[` returns the entry.
+
 ## `data.frame`
 
+A `data.frame` is similar to a `list` (and a `matrix`) but the number of entries in each slot must be the same:
+
+```{r data.frame}
+df <- data.frame(A = 1:3, B = c("test1", "test2", "test3"))
+df
+is.data.frame(df)
+typeof(df)
+dim(df)
+length(df)
+ncol(df)
+nrow(df)
+```
+
+Subsetting works as follows:
+
+```{r data.frame-subsetting}
+df$A
+df[1]
+df[1,1] # compare this to a[1,1]
+```
+
+The `data.frame` is the best option when storing numeric and non-numeric entries side-by-side.
+
 ## `factor`
+
+By default, characters that are passed into the `data.frame()` functions are converted into a factor.
+
+```{r factor}
+df$B
+is.factor(df$B)
+```
+
+Let's create a factor from scratch:
+
+```{r create-factor}
+a <- factor(c("test1", "test2", "test3"))
+a
+levels(a)
+```
+
+In a factor `levels` stores all unique entries in the factor. 
+They remain in place when sub-setting a factor:
+
+```{r factor-subsetting}
+a[1]
+```
+
+Factors will come in handy when using `ggplot2` later on.
 
 # Loops and the `if` statement
 
