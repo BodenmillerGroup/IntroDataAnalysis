@@ -12,7 +12,7 @@ To maximise the time spend on actual hands-on training in both languages, please
 
 **Session 1:**
 
-* Install R from [https://cran.r-project.org/](https://cran.r-project.org/) or make sure that you have R version 3.6.1 (or higher) installed.
+* Install R from [https://cran.r-project.org/](https://cran.r-project.org/) or via brew (`brew install r`) or make sure that you have R version 3.6.1 (or higher) installed.
 * Install RStudio Desktop from [https://rstudio.com/products/rstudio/](https://rstudio.com/products/rstudio/)
 * Test the install by opening RStudio and typing:
 
