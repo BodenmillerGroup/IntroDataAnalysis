@@ -20,6 +20,8 @@ To maximise the time spend on actual hands-on training in both languages, please
 example(readline)
 ```
 
+To knit an Rmardown (.Rmd) files, you need to install `rmarkdown` via `install.packages("rmarkdown")`.
+
 ### Python
 
 **Session 1:**
