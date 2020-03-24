@@ -24,3 +24,4 @@ Similar introduction: [https://www.youtube.com/watch?v=fDRa82lxzaU](https://www.
 
 Nice resource: [https://www.guru99.com/r-tutorial.html](https://www.guru99.com/r-tutorial.html)
 
+More on statistics in R: [https://www.rstatisticsblog.com/](https://www.rstatisticsblog.com/)
