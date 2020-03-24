@@ -34,4 +34,7 @@ To knit an Rmardown (.Rmd) files, you need to install `rmarkdown` via `install.p
 import this
 ```
 
+## Joint sessions
 
+* March 24, Introduction to Data Analysis Environments  
+  https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing
