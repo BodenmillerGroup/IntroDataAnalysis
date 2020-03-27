@@ -1,0 +1,18 @@
+.reveal table {
+    font: inherit;
+}
+
+.reveal code {
+    padding: 0px 2px !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(207, 207, 207);
+}
+
+.reveal ul, .reveal ol {
+    margin-top: 0px !important;
+}
+
+.reveal blockquote p:first-child {
+    margin-top: 0px !important;
+}
