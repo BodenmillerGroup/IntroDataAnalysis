@@ -313,7 +313,58 @@ wilcox.test(test.cor[,1], test.cor[,2])
 wilcox.test(test.cor[,1], test.cor[,2], alternative = "less")
 ```
 
-
 # Reading in data
+
+Reading data int R can be tedious at times.
+Depending on the data format, different packages have been developed for different data types.
+
+We will start with the base R functions for reading in data.
+The standard function is `read.table` that takes a number of arguments.
+
+```{r read-in-1}
+cur_data <- read.table("~/Github/IntroDataAnalysis/Data/iris.csv", header = TRUE, sep = ",")
+head(cur_data)
+
+cur_data$Species
+```
+
+We notice that the `character` entry in the dataset was read in as `factor`.
+This is often an unwanted behaviour and can be suppressed setting `stringsAsFactors = FALSE`.
+
+```{r read-in-2}
+cur_data <- read.table("~/Github/IntroDataAnalysis/Data/iris.csv", 
+                       header = TRUE, sep = ",", stringsAsFactors = FALSE)
+cur_data$Species
+```
+
+In the next version of R, the default for `stringsAsFactors` will finally be set to FALSE.
+
+Other useful parameters are `na.strings` indicating which entries should be set to `NA`.
+Also the `skip` parameter let's you skip an indicated number of lines.
+
+However, there are convenience functions that read-in specific data fromats:
+
+```{r read-csv}
+cur_data <- read.csv("~/Github/IntroDataAnalysis/Data/iris.csv", 
+                       header = TRUE, stringsAsFactors = FALSE)
+```
+
+Similarly, data can also be written out:
+
+```{r write.table}
+write.csv(iris, "~/Github/IntroDataAnalysis/Data/iris.csv", quote = FALSE, row.names = FALSE, sep = ",")
+```
+
+## Working with Excel documents :(
+
+It is always safer to work with .csv or similar text documents in R.
+If not possible otherwise, we can use the `openxlsx` package to read and write xlsx files.
+
+```{r xlsx}
+library(openxlsx)
+
+write.xlsx(iris, "~/Github/IntroDataAnalysis/Data/iris.xlsx")
+cur_data <- read.xlsx("~/Github/IntroDataAnalysis/Data/iris.xlsx")
+```
 
 # Plotting
