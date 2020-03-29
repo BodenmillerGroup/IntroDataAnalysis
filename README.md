@@ -25,6 +25,27 @@ example(readline)
 
 To knit an Rmardown (.Rmd) files, you need to install `rmarkdown` via `install.packages("rmarkdown")`.
 
+**Session 2:**
+
+* Clone this repository
+
+Via terminal:
+
+1. Create a `Github` folder on your local machine.
+2. Enter the folder
+3. Clone the repository
+
+```shell
+cd ~
+mkdir Github
+cd Github
+git clone https://github.com/BodenmillerGroup/IntroDataAnalysis.git
+```
+
+Via Github Desktop (e.g. on Windows):
+
+Follow [these guidelines](https://help.github.com/en/desktop/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop)
+
 ### Python
 
 **Session 1:**
