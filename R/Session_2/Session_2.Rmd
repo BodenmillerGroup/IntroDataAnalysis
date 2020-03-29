@@ -233,6 +233,36 @@ ifelse((a > 0.5) & (a < 0.7), "Between 0.5 and 0.7", "Other")
 
 # Functions
 
+It is often convenient to wrap complicated code inside a function rather than copy-pasting it multiple times.
+Here, we will create a simple function in R:
+
+```{r function-1}
+my_expo_function <- function(x, expo, silent = TRUE){
+  out <- x ^ expo
+  
+  if (isFALSE(silent)) { # safer than if (!silent) {}
+    print(paste(x, "to the power of", expo, "is", out))
+  }
+
+  return(out)  
+}
+```
+
+The function takes three arguments: `x`, `expo`, `silent`.
+While `x` and `expo` need to be specified, `silent` is predefined but takes logical entries.
+
+The function ends with `return`, which returns the selected variable back to the R session:
+
+```{r function-2}
+a <- my_expo_function(2, 10)
+a
+
+a <- my_expo_function(x = 2, expo = 10)
+a
+
+a <- my_expo_function(2, 10, silent = FALSE)
+```
+
 # The `stats` package
 
 The `stats` package contains most relvant statistical functions in R.
@@ -282,3 +312,8 @@ t.test(test.cor[,1], test.cor[,2])
 wilcox.test(test.cor[,1], test.cor[,2])
 wilcox.test(test.cor[,1], test.cor[,2], alternative = "less")
 ```
+
+
+# Reading in data
+
+# Plotting
