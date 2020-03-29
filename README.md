@@ -4,6 +4,9 @@ The main purpose of this repository is to collect example data and instruction s
 Training sessions are divided into [R](../master/R) and [python](../master/python) training.
 All example data are centrally available from the [Data](../master/Data) folder.
 
+**Disclaimer:** We prepared these sessions to give a very broad introduction to the R and python programming language.
+These sessions should not replace university courses and might not contain all relevant topics.
+
 ## Things to install
 
 To maximise the time spend on actual hands-on training in both languages, please install the following software specified for the different sessions:
