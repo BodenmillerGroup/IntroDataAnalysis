@@ -46,6 +46,12 @@ Via Github Desktop (e.g. on Windows):
 
 Follow [these guidelines](https://help.github.com/en/desktop/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop)
 
+* Install the `openxlsx` package in R by typing:
+
+```r
+install.packages("openxlsx")
+```
+
 ### Python
 
 **Session 1:**
