@@ -368,3 +368,88 @@ cur_data <- read.xlsx("~/Github/IntroDataAnalysis/Data/iris.xlsx")
 ```
 
 # Plotting
+
+Here, we will go through the most common base R plotting functions.
+However, they are not visually appealing and in the next session, we will talk about `ggplot2`
+
+## Sample data
+
+Here, we will use the `airquality` data from the `datasets` library in R.
+
+```{r datasets}
+library(datasets)
+?airquality
+head(airquality)
+```
+
+The data are stored in the "long" format, which makes plotting a lot easier.
+
+## Scatter plots
+
+The scatter plot is a bi-axial plot highlighting two features:
+
+```{r scatter-plot}
+plot(airquality$Wind, airquality$Ozone)
+with(airquality, plot(Wind, Ozone))
+title("Ozone and Wind in New York City")
+```
+
+There are a number of parameters that can be set to alter the appearance of the plot:
+
+```{r par}
+?par
+```
+
+Here is an example of an altered plot:
+
+```{r scatter-plot-2}
+with(airquality, plot(Wind, Ozone, pch = 16, cex = 2, xlab = "Wind_measure", 
+                      ylab = "Ozone_measure", xlim = c(0,25), ylim = c(0,200),
+                      col = "dark red"))
+```
+
+### Adding things to a plot
+
+We can now also add further things to a plot.
+As an example, we perform a linear regression between the Wind and Ozone measures.
+
+```{r adding}
+cur_lm <- lm(Ozone ~ Wind, airquality)
+cur_lm
+cur_sum <- summary(cur_lm)
+cur_sum
+
+with(airquality, plot(Wind, Ozone, pch = 16))
+abline(cur_lm, lwd = 2)
+abline(a = coefficients(cur_lm)[1], b = coefficients(cur_lm)[2], lwd = 2)
+
+text(x = 19, y = 150, label = paste("R2:", round(cur_sum$r.squared, 2)))
+```
+
+## Histograms
+
+Base R also allows the plotting of histograms:
+
+```{r histogram}
+hist(airquality$Ozone)
+plot(density(airquality$Ozone, na.rm = TRUE))
+```
+
+## Boxplots
+
+Finally, we can also plot boxplots in R.
+
+```{r boxplot}
+library(RColorBrewer)
+boxplot(Ozone ~ Month, airquality, col = brewer.pal(5, name = "Set1"))
+legend(x = 0.5, y = 150, legend = c(5,6,7,8,9), 
+       fill = brewer.pal(5, name = "Set1"), title = "Month", 
+       cex = 0.7)
+```
+
+
+
+
+
+
+
