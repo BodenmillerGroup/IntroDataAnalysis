@@ -25,6 +25,8 @@ Nice resource: [https://www.guru99.com/r-tutorial.html](https://www.guru99.com/r
 
 More on statistics in R: [https://www.rstatisticsblog.com/](https://www.rstatisticsblog.com/)
 
+R Studio cheatsheet: [https://rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf](https://rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf)
+
 ## Session 2
 
 In this session, we will go through loops, if else statements, how to build functions, the [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) package, how to read in data and the base R plotting functions.
