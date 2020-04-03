@@ -9,7 +9,7 @@
     border-color: rgb(207, 207, 207);
 }
 
-.reveal ul, .reveal ol {
+.reveal p + ul, .reveal p + ol {
     margin-top: 0px !important;
 }
 
