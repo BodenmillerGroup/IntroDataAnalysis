@@ -39,4 +39,16 @@ More examples on reading in data: [https://www.datacamp.com/community/tutorials/
 
 Base R plotting: [https://bookdown.org/rdpeng/exdata/the-base-plotting-system-1.html](https://bookdown.org/rdpeng/exdata/the-base-plotting-system-1.html)
 
+## Session 3
+
+In this session, we will discuss the `tidyverse` [https://www.tidyverse.org/](https://www.tidyverse.org/) that allows you to work with tidy data in R. 
+The main packages will be `dplyr`, `tidyr` and `ggplot2`.
+
+Have a look at the [R for data science](https://r4ds.had.co.nz/) book online - it's an excellent introduction to handle data in R.
+
+For `ggplot2` help, please refer to the full list of functions at [https://ggplot2.tidyverse.org/reference/](https://ggplot2.tidyverse.org/reference/).
+Also cool extension packages to ggplot are: [https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html), [https://github.com/const-ae/ggupset](https://github.com/const-ae/ggupset), [https://github.com/const-ae/ggsignif](https://github.com/const-ae/ggsignif)
+
+To generate publication-ready figures, you also want to checkout [https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html), [https://rpkgs.datanovia.com/ggpubr/index.html](https://rpkgs.datanovia.com/ggpubr/index.html) and [https://github.com/thomasp85/patchwork](https://github.com/thomasp85/patchwork)
+
 
