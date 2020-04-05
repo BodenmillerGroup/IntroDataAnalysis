@@ -1,0 +1,111 @@
+---
+title: "Session 3: tidyverse and publication-ready figures"
+author: "Nils"
+date: "`r Sys.Date()`"
+output: html_notebook
+---
+
+In this session, I will go through the concept of tidy data in R. 
+Tidy data is broadly defined as having individual samples in the rows of a data matrix while the columns define variables (or features) describing the samples [https://en.wikipedia.org/wiki/Tidy_data](https://en.wikipedia.org/wiki/Tidy_data).
+This is the standard format for any sort of statistical analysis.
+
+We will also discuss the `long` and `wide` data format.
+
+The `tidyverse` library offers a set of libraries that handle tidy data in R:
+
+```{r load-libraries}
+library(tidyverse)
+```
+
+From the full set of tools, I will be talking about the `readr`, `dplyr`, `tidyr`, `magrittr` and `ggplot2` package in more detail.
+This tutorial will closely follow examples provided in the [R for data science book](https://r4ds.had.co.nz/index.html).
+
+The general workflow for data analysis in R is:
+
+1. Reading in your data
+2. Tidying your data
+3. Transforming your data
+4. Visualizing your data
+5. Modelling your data
+
+In the last session, we have talked about different ways of reading in the data.
+
+## Introduction
+
+To understand the following session, I will need to introduce a new data type: tibble
+
+### Tibbles
+
+Tibbles are an enhanced version of the base R `data.frame` but with similar functionality.
+
+```{r create-tibble}
+data(iris)
+iris
+as_tibble(iris)
+```
+
+Only the first 10 entries are shown.
+
+Tibbles can be created using the `tibble` function:
+
+```{r create-tibble-2}
+tb <- tibble(x = 1:5, y = 1, z = x ^ 2 + y)
+tb
+
+df <- data.frame(x = 1:5, y = 1)
+df$z <- df$x ^ 2 + df$y
+df
+```
+
+Coercion into `data.frame` works via `as.data.frame`:
+
+```{r coercion}
+as.data.frame(tb)
+```
+
+Subsetting is enhanced for `tibble` compared to `data.frames` and `stringAsFactor` argument is ignored.
+
+```{r subsetting}
+df <- data.frame(abc = 1:3, xyz = c("a", "b", "c"))
+df
+df$x
+df$xyz
+df["x"]
+df["xyz"]
+df[["xyz"]]
+df[,"xyz"]
+df[,c("abc", "xyz")]
+
+tb <- tibble(abc = 1:3, xyz = c("a", "b", "c"))
+tb$x
+tb$xyz
+tb["x"]
+tb["xyz"]
+tb[["xyz"]]
+tb[,"xyz"]
+tb[,c("abc", "xyz")]
+```
+
+## Reading in data
+
+We have discussed the base R `read.table` and `read.csv` function in the last session.
+Now we will work with the `readr` package to read data into tibbles with a few enhancements:
+
+```{r read_csv}
+readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv")
+```
+
+## The long and wide format
+
+## Data transformation
+
+Wrangling = tidying + transforming
+
+`pivot_longer()`
+
+
+
+## Visualize your data
+
+## Model your data
+
