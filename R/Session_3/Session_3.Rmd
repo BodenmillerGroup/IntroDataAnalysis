@@ -20,7 +20,7 @@ The `tidyverse` library offers a set of libraries that handle tidy data in R:
 library(tidyverse)
 ```
 
-From the full set of tools, I will be talking about the `readr`, `dplyr`, `tidyr`, `magrittr` and `ggplot2` package in more detail.
+From the full set of tools, I will be talking about the `tibble`, `readr`, `tidyr`, `dplyr`, `magrittr` and `ggplot2` package in more detail.
 This tutorial will closely follow examples provided in the [R for data science book](https://r4ds.had.co.nz/index.html).
 
 The general workflow for data analysis in R is:
@@ -134,18 +134,89 @@ cur_file_2 <- readRDS("~/Github/IntroDataAnalysis/Data/iris.rds")
 cur_file_2
 ```
 
+## Tidying up your data
 
-## The long and wide format
+This section will introduce the `tidyr` package.
+A tidy dataset is defined as:
+
+1. Each variable must have its own column.
+2. Each observation must have its own row.
+3. Each value must have its own cell.
+
+An example is given by the follwing dataset:
+
+```{r tidy_data-example}
+table1
+```
+
+However, datasets often come in all types of forms that do not follow these rules (messy data).
+The `tidyr` package provides the `pivot_longer` and `pivot_wider` function to handle the ransformation from messy to tidy data.
+Similar functions are exported from the `reshape2` and `data.table` package (`melt`, `acast`, `dcast`).
+
+Here is an example:
+
+```{r messy_data-example}
+table4a
+```
+
+The `pivot_longer` function provides a long format tibble storing individual observations in rows and variables in columns.
+
+```{r pivot_longer}
+pivot_longer(table4a, cols = c("1999", "2000"), names_to = "year", values_to = "cases")
+```
+
+Another example is the following dataset:
+
+```{r messy_data-example-2}
+table2
+```
+
+To make the data wider, the `tidyr` package provides the `pivot_wider` function:
+
+```{r pivot_wider}
+pivot_wider(table2, names_from = "type", values_from = "count")
+```
+
+The `tidyr` package can also be used to split and merge columns.
+
+As an example, we use this messy data:
+
+```{r messy_example-3}
+table3
+```
+
+The `rate` column can be split using the `separate` operation:
+
+```{r splitting-merging}
+separate(table3, col = "rate", into = c("cases", "populations"), sep = "/", convert = TRUE)
+```
+
+On the other hand, `tidyr` can also unite data:
+
+```{r unite}
+table5
+unite(table5, col = "year", century, year, sep = "")
+```
+
+## The pipe operator
+
+The `magrittr` package exports a set of operators taht facilitates the concatenations of operations in R.
+At this point, I only want to mention the `%>%` forward pipe operator.
+
+This allows us use functions in the following way:
+
+```{r piping}
+table5 %>% unite(col = "year", century, year, sep = "")
+```
+
+From now on, we will only use the pipe operator.
 
 ## Data transformation
 
 Wrangling = tidying + transforming
 
-`pivot_longer()`
 
 
 
 ## Visualize your data
-
-## Model your data
 
