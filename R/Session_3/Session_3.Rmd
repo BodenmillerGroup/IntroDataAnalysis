@@ -11,6 +11,9 @@ This is the standard format for any sort of statistical analysis.
 
 We will also discuss the `long` and `wide` data format.
 
+**Disclaimer:** Tidyverse offers functionality, which is quite similar to base R's behaviour but with higher efficiency and less typing.
+However, for beginners it can get confusing to mix both ways of programming.
+
 The `tidyverse` library offers a set of libraries that handle tidy data in R:
 
 ```{r load-libraries}
@@ -92,8 +95,45 @@ We have discussed the base R `read.table` and `read.csv` function in the last se
 Now we will work with the `readr` package to read data into tibbles with a few enhancements:
 
 ```{r read_csv}
-readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv")
+cur_file <- readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv")
+cur_file 
+
+cur_file <- readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv", col_names = FALSE)
+cur_file 
+
+cur_file <- readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv", na = "setosa")
+cur_file 
 ```
+
+The `read_csv` and other functions of the `readr` package are faster, generate tibbles, use rownames and ignore `stringAsFactor`.
+
+By default, `readr` reads in the first 1000 lines of the file and for each column guesses the data type.
+This behaviour can be overwritten:
+
+```{r read_csv-2}
+cur_file <- readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv", 
+                            col_types = cols(
+                                Sepal.Length = col_character(),
+                                Sepal.Width = col_character(),
+                                Petal.Length = col_character(),
+                                Petal.Width = col_character(),
+                                Species = col_character()
+                                ))
+cur_file 
+```
+
+Extension to previous session:
+
+At this point it is also usefult to mention the `saveRDS` and `readRDS` function.
+They save individual R objects "as is" on disc:
+
+```{r saveRDS}
+cur_file <- readr::read_csv("~/Github/IntroDataAnalysis/Data/iris.csv")
+saveRDS(cur_file, "~/Github/IntroDataAnalysis/Data/iris.rds")
+cur_file_2 <- readRDS("~/Github/IntroDataAnalysis/Data/iris.rds")
+cur_file_2
+```
+
 
 ## The long and wide format
 
