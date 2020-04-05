@@ -331,3 +331,158 @@ flights %>%
 
 ## Visualize your data
 
+In the next section, we will use the `ggplot2` package to visualize the data.
+
+Each `ggplot` call is structured in the same way:
+
+ggplot(data = <Data>) + <GEOM_FUNCTION>(mapping = aes(<MAPPING>))
+
+As a simple example, we will use a smaller dataset:
+
+```{r ggplot-example}
+mpg
+ggplot(data = mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+`disply` is the cars' engine size and `hwy` is the fuel efficiency on a highway.
+
+The `+` operator let's you add layers to a plot
+
+```{r ggplot-example2}
+p <- ggplot(data = mpg)
+p
+
+p <- p + geom_point(mapping = aes(x = displ, y = hwy))
+p
+
+p <- p + geom_smooth(mapping = aes(x = displ, y = hwy))
+p
+```
+
+### Changeing the aesthetics
+
+There are multiple ways of adjusting the visual output INSIDE the `aes()` call.
+
+```{r aes}
+ggplot(data = mpg) + 
+    geom_point(mapping = aes(x = displ, y = hwy, colour = class, size = displ, alpha = hwy))
+
+ggplot(data = mpg) + 
+    geom_point(mapping = aes(x = displ, y = hwy, colour = manufacturer))
+```
+
+There are also manipulations possible that you need to set OUTSIDE the `aes()` call.
+
+```{r aes-2}
+ggplot(data = mpg) + 
+    geom_point(mapping = aes(x = displ, y = hwy), 
+               colour = "blue",
+               size = 10,
+               shape = "+")
+```
+
+## Facetting
+
+Using `ggplot2`, you can split the plot into multiple sub-plots using `facet_wrap` for single variables and `facet_grid` for two variables:
+
+```{r facetting}
+ggplot(data = mpg) + 
+    geom_point(mapping = aes(x = displ, y = hwy)) +
+    facet_wrap( ~ class)
+
+ggplot(data = mpg) + 
+    geom_point(mapping = aes(x = displ, y = hwy)) +
+    facet_grid(drv ~ class)
+```
+
+### Other examples of plots
+
+Here, I will demonstrate how to plot boxplots, jitter, violin plots and bar plots
+
+```{r boxplot}
+ggplot(data = mpg) + 
+    geom_boxplot(mapping = aes(x = class, y = hwy, fill = class))
+
+ggplot(data = mpg) + 
+    geom_boxplot(mapping = aes(x = class, y = hwy, fill = drv))
+
+ggplot(data = mpg) + 
+    geom_boxplot(mapping = aes(x = class, y = hwy), 
+                 outlier.color = NA) +
+    geom_jitter(mapping = aes(x = class, y = hwy, colour = class))
+
+ggplot(data = mpg) + 
+    geom_violin(mapping = aes(x = class, y = hwy)) +
+    geom_jitter(mapping = aes(x = class, y = hwy, colour = class))
+```
+
+Plotting a stacked bar plot soley displays counts data:
+
+```{r bar-plot}
+ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class))
+
+ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class, fill = drv))
+
+
+# Other ways of stagging
+ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class, fill = drv), 
+             position = "dodge")
+
+ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class, fill = drv), 
+             position = "fill")
+```
+
+
+### Setting the theme and scales
+
+All visual properties of the plots can be changed using `theme` and `*_scale`
+
+```{r theme_scale}
+ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class, fill = drv), 
+             position = "fill") + 
+    theme(axis.text.x = element_text(size = 12, 
+                                     colour = "black"), 
+          panel.background = element_blank()) + 
+    scale_fill_manual(values = c(`4` = "blue", f = "red", r = "green"))
+```
+
+### Displaying multiple plots
+
+Finally, I will highlight the functionality of the `cowplot` and `patchwork` package to display multiple plots side-by-side:
+
+```{r multi-plotting-examples}
+p1 <- ggplot(data = mpg) + 
+    geom_violin(mapping = aes(x = class, y = hwy)) +
+    geom_jitter(mapping = aes(x = class, y = hwy, colour = class))
+
+p2 <- ggplot(data = mpg) +
+    geom_bar(mapping = aes(x = class, fill = drv), 
+             position = "fill")
+
+p3 <- ggplot(data = mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy)) + 
+    geom_smooth(mapping = aes(x = displ, y = hwy))
+
+library(cowplot)
+
+plot_grid(p1, p2, p3, ncol = 2, nrow = 2)
+
+library(patchwork)
+
+p1 + p2 + p3
+
+p1 + (p2 / p3)
+
+(p1 + p2) / p3
+```
+
+
+
+
+
