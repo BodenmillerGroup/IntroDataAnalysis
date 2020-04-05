@@ -52,6 +52,27 @@ Follow [these guidelines](https://help.github.com/en/desktop/contributing-to-pro
 install.packages("openxlsx")
 ```
 
+**Session 3**
+
+Please install the `tidyverse` library via:
+
+```r
+install.packages("tidyverse")
+```
+
+You might in addition need to install the `DBI` library:
+
+```r
+install.packages("DBI")
+```
+
+Please also install the `cowplot` and `patchwork` libraries via:
+
+```r
+install.packages("cowplot")
+install.packages("patchwork")
+```
+
 ### Python
 
 **Session 1:**
