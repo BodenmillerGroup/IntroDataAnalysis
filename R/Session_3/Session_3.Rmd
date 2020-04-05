@@ -213,10 +213,121 @@ From now on, we will only use the pipe operator.
 
 ## Data transformation
 
-Wrangling = tidying + transforming
+The `dplyr` package offers five essential functions to perform data transformations in R: `filter`, `arrange`, `select`, `mutate` and `summarise`
 
+These operations can be used within pipes.
 
+As an example, we take the `nycflights13::flights` dataset.
 
+### Filter
+
+The `filter` function filters a `data.frame` or `tibble` based on it's content.
+
+```{r filter}
+library(nycflights13)
+flights
+
+flights %>% filter(month == 1, day == 1)
+
+# Assignment
+cur_data <- flights %>% filter(month == 1, day == 1)
+cur_data
+
+# Also works with data.frame
+as.data.frame(flights) %>% filter(month == 1, day == 1)
+
+# Don't use || or && here!
+flights %>% filter(month == 1 | month == 12)
+
+# Base R
+subset(flights, month == 1 | month == 12)
+```
+
+### Arrange
+
+The `arrange` function orderes data.frames and tibbles:
+
+```{r arrange}
+flights %>% arrange(year, month, dep_time)
+
+# Descending order
+flights %>% arrange(desc(month))
+
+# Base R
+flights[order(flights$month, decreasing = TRUE),]
+```
+
+### Select
+
+The `select` function selects columns in useful ways.
+
+```{r select}
+flights %>% select(year, month)
+
+# Everything between year and day
+flights %>% select(year:day)
+
+# String matching
+flights %>% select(starts_with("dep"))
+flights %>% select(contains("dep"))
+
+# Base R
+flights[,grep("^dep", colnames(flights))]
+flights[,grep("dep", colnames(flights))]
+```
+
+### Mutate
+
+The `mutate` function adds new columns to a dataset by performing an operation on existing columns:
+
+```{r mutate}
+flights %>% 
+    select(year:day, ends_with("delay"), distance, air_time) %>%
+    mutate(gain = dep_delay - arr_delay,
+           speed = (distance / air_time) * 60)
+```
+
+The `transmute` function only returns the newly generated entries.
+
+```{r transmute}
+flights %>% 
+    select(year:day, ends_with("delay"), distance, air_time) %>%
+    transmute(gain = dep_delay - arr_delay,
+           speed = (distance / air_time) * 60)
+```
+
+## Summarise
+
+The `summarise` function computes summary statistics on individual columns:
+
+```{r summarise}
+flights %>% summarise(delay = mean(dep_delay, na.rm = TRUE), 
+                      delay_var = var(dep_delay, na.rm = TRUE))
+```
+
+## Group_by
+
+The perform fast and efficient data transformations, the `group_by` function comes in handy:
+
+```{r group_by}
+cur_tbl <- group_by(flights, year, month, day)
+class(cur_tbl)
+
+summarise(cur_tbl, 
+          delay = mean(dep_delay, na.rm = TRUE),
+          delay_var = var(dep_delay, na.rm = TRUE))
+```
+
+Let's build more complex pipes:
+
+```{r complex-pipes}
+flights %>% 
+    filter(dest == "DEN") %>%
+    mutate(speed = (distance / air_time) * 60) %>%
+    group_by(year, month, day) %>%
+    summarise(mean_speed = mean(speed, na.rm = TRUE)) %>%
+    arrange(desc(mean_speed))
+```
 
 ## Visualize your data
 

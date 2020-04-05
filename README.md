@@ -54,10 +54,11 @@ install.packages("openxlsx")
 
 **Session 3**
 
-Please install the `tidyverse` library via:
+Please install the `tidyverse`  and `nycflights13` libraries via:
 
 ```r
 install.packages("tidyverse")
+install.packages("nycflights13")
 ```
 
 You might in addition need to install the `DBI` library:
