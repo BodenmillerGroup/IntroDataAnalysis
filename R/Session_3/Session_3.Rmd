@@ -345,7 +345,7 @@ ggplot(data = mpg) +
     geom_point(mapping = aes(x = displ, y = hwy))
 ```
 
-`disply` is the cars' engine size and `hwy` is the fuel efficiency on a highway.
+`displ` is the cars' engine size and `hwy` is the fuel efficiency on a highway.
 
 The `+` operator let's you add layers to a plot
 
@@ -360,7 +360,7 @@ p <- p + geom_smooth(mapping = aes(x = displ, y = hwy))
 p
 ```
 
-### Changeing the aesthetics
+### Changing the aesthetics
 
 There are multiple ways of adjusting the visual output INSIDE the `aes()` call.
 
