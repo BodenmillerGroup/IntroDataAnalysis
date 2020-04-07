@@ -78,13 +78,22 @@ install.packages("patchwork")
 
 **Session 1:**
 
-* Install Anaconda for Python 3.7 from [https://www.anaconda.com/distribution](https://www.anaconda.com/distribution)
-* Launch “Spyder” and “Jupyter Notebook” from the Anaconda Navigator (Recommendation: install Kite if Spyder asks you whether you want to)
-* Run the following command in Spyder (bottom right) and Jupyter Notebook:
+1. Install Anaconda for Python 3.7 from [https://www.anaconda.com/distribution](https://www.anaconda.com/distribution)
+2. Launch “Spyder” and “Jupyter Notebook” from the Anaconda Navigator  
+   Recommendation: install Kite if Spyder asks you whether you want to
+3. Run the following command in Spyder (bottom right) and Jupyter Notebook:
 
 ```python
 import this
 ```
+
+**Session 3:**
+
+Please install the tifffile package using Anaconda:
+1. Open Anaconda Navigator, go to `Environments` and select your environment, e.g. `base`
+2. In the first dropdown, select `All` and refresh your package index by clicking `Update index...`
+3. Search for the `tifffile` package, mark it for installation and apply your changes by clicking on `Apply`
+
 
 ## Joint sessions
 
