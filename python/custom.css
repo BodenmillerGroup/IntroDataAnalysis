@@ -16,3 +16,7 @@
 .reveal blockquote p:first-child {
     margin-top: 0px !important;
 }
+
+.reveal .dataframe {
+    font-size: small;
+}
