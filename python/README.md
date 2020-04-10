@@ -22,7 +22,7 @@ https://zoom.us/j/854293838
 *14.04. Version control using Git (Laura Kinkead)*  
 17.04. Development environments, Q&A session  
 
-Joint sessions and special sessions are indicated in red.
+Joint sessions and special sessions are indicated in italic.
 
 ## Prerequisites
 
