@@ -1,4 +1,4 @@
-# Python session notebooks 
+# Python sessions 
 
 This folder contains IPython notebooks that were used in the Python sessions.
 
@@ -22,7 +22,7 @@ https://zoom.us/j/854293838
 *14.04. Version control using Git (Laura Kinkead)*  
 17.04. Development environments, Q&A session  
 
-Joint sessions and special sessions are indicated in italic.
+Joint sessions and special sessions are highlighted in italic font.
 
 ## Prerequisites
 
