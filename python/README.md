@@ -15,14 +15,10 @@ Replace `notebook.ipynb` with the IPython notebook file name you'd like to conve
 Every Friday, 10:00-12:00  
 https://zoom.us/j/854293838
 
-*24.03. Introduction*  
 27.03. Programming with Python  
 03.04. The `numpy` package, plotting with `matplotlib`  
 10.04. Processing tabular data with `pandas`, image processing  
-*14.04. Version control using Git (Laura Kinkead)*  
-17.04. Development environments, Q&A session  
-
-Joint sessions and special sessions are highlighted in italic font.
+17.04. Development environments, Q&A session
 
 ## Prerequisites
 
