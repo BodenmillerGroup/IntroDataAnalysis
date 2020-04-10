@@ -80,3 +80,10 @@ install.packages("patchwork")
 * March 24, Introduction to Data Analysis Environments  
   https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing
 * April 14, Version control with Git
+
+
+## Contributors
+
+* Nils Eling (R sessions)
+* Jonas Windhager (Python sessions)
+* Laura Kinkead (Version control with Git)
