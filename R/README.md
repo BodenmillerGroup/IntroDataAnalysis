@@ -4,6 +4,18 @@ This folder contains the scripts that are discussed in the different R sessions.
 
 ## Session 1
 
+**Things to install:**
+
+* Install R from [https://cran.r-project.org/](https://cran.r-project.org/) or via brew (`brew install r`) or make sure that you have R version 3.6.1 (or higher) installed.
+* Install RStudio Desktop from [https://rstudio.com/products/rstudio/](https://rstudio.com/products/rstudio/)
+* Test the install by opening RStudio and typing:
+
+```r
+example(readline)
+```
+
+To knit an Rmardown (.Rmd) files, you need to install `rmarkdown` via `install.packages("rmarkdown")`.
+
 **Introduction to RStudio:**
 
 I will give an overview on the functionality of RStudio and how to easily create R markdown scripts.
@@ -31,6 +43,33 @@ R Studio cheatsheet: [https://rstudio.com/wp-content/uploads/2016/01/rstudio-IDE
 
 In this session, we will go through loops, if else statements, how to build functions, the [stats](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) package, how to read in data and the base R plotting functions.
 
+**Things to prepare:**
+
+* Clone this repository
+
+Via terminal:
+
+1. Create a `Github` folder on your local machine.
+2. Enter the folder
+3. Clone the repository
+
+```shell
+cd ~
+mkdir Github
+cd Github
+git clone https://github.com/BodenmillerGroup/IntroDataAnalysis.git
+```
+
+Via Github Desktop (e.g. on Windows):
+
+Follow [these guidelines](https://help.github.com/en/desktop/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop)
+
+* Install the `openxlsx` package in R by typing:
+
+```r
+install.packages("openxlsx")
+```
+
 **Further reading:**
 
 This is a good tutorial on loops: [https://www.datacamp.com/community/tutorials/tutorial-on-loops-in-r](https://www.datacamp.com/community/tutorials/tutorial-on-loops-in-r)
@@ -43,6 +82,26 @@ Base R plotting: [https://bookdown.org/rdpeng/exdata/the-base-plotting-system-1.
 
 In this session, we will discuss the `tidyverse` [https://www.tidyverse.org/](https://www.tidyverse.org/) that allows you to work with tidy data in R. 
 The main packages will be `dplyr`, `tidyr` and `ggplot2`.
+
+Please install the `tidyverse`  and `nycflights13` libraries via:
+
+```r
+install.packages("tidyverse")
+install.packages("nycflights13")
+```
+
+You might in addition need to install the `DBI` library:
+
+```r
+install.packages("DBI")
+```
+
+Please also install the `cowplot` and `patchwork` libraries via:
+
+```r
+install.packages("cowplot")
+install.packages("patchwork")
+```
 
 Have a look at the [R for data science](https://r4ds.had.co.nz/) book online - it's an excellent introduction to handle data in R.
 
