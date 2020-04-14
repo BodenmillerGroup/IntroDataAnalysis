@@ -16,6 +16,7 @@ To maximise the time spend on actual hands-on training in both languages, please
 * March 24, Introduction to Data Analysis Environments  
   https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing
 * April 14, Version control with Git  
+  https://docs.google.com/presentation/d/1iG-uxHIRQ2KHwUPBSZcPlFs2xdOGWW2Ze0owIVieZPA/edit?usp=sharing
   Workshop instructions: https://www.notion.so/Git-Workshop-Guide-11ba074749304879936b7e2868b57079
 
 ## Contributors
