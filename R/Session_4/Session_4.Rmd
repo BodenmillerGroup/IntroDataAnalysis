@@ -29,8 +29,8 @@ Bioconductor version 3.10 offers 1823 [software packages](https://bioconductor.o
 Bioconductor packages can be conveniently installed using `BiocManager`:
 
 ```{r BiocManager}
-install.packages("BiocManager")
-BiocManager::install("SingleCellExperiment")
+#install.packages("BiocManager")
+#BiocManager::install("SingleCellExperiment")
 
 # Should be '3.10'
 BiocManager::version()
@@ -43,8 +43,8 @@ I prefer using the `BiocManager::install` since it checks if there are outdated 
 The `BiocManager::install` function also allows you to install CRAN and Github packages.
 
 ```{r BiocManager-2}
-BiocManager::install("igraph")
-BiocManager::install("JinmiaoChenLab/Rphenograph")
+#BiocManager::install("igraph")
+#BiocManager::install("JinmiaoChenLab/Rphenograph")
 ```
 
 Bioconductor packages are released twice a year - once in April/May, once in October.
@@ -161,12 +161,83 @@ rowVars(assay(sce, "scaled"))
 
 In this section, we will learn how to perform common dimensionality reduction methods using the `scater` package.
 We will start by peforming a principal component analysis.
-For this, we can use the `runPCA` function provided by the scater package.
+For this, we can use the `runPCA` function provided by the `scater` package.
 
+```{r PCA}
+library(scater)
+sce <- runPCA(sce, exprs_values = "exprs", ncomponents = 10)
+reducedDims(sce)$PCA
+```
 
+We can also compute a TSNE using the `runTSNE` function. 
+Of note: you need to set a seed for reproducibility.
+Also, the default `perplexity` value for the `runTSNE` function is the number of cells divided by 5.
+This is far larger than the default value for `Rtsne`, which is 30 but should preserve the overall structure better.
+However, it is recommended setting different seeds and different `perplexity` parameters to check the effect of those on the visual appearance of the TSNE.
+
+```{r TSNE}
+set.seed(12345)
+sce <- runTSNE(sce, exprs_values = "exprs")
+
+reducedDims(sce)
+```
+
+Finally, we can also compute a UMAP:
+
+```{r umap}
+set.seed(12345)
+sce <- runUMAP(sce, exprs_values = "exprs")
+
+reducedDims(sce)
+```
+
+Again, you need to play around with the seed and the `n_neighbors` and the `min_dist` parameter to see how this affects the visual appearance.
+In general, the non-linear dimensionality reduction methods (tSNE, UMAP) only offer a visual tool and should not be used for clustering.
 
 ## Visualization
 
+The scater package offers a number of functions to visualize the `SingleCellExperiment` object.
+
+The `plotExpression` function plots expression values stored in the `SingleCellExperiment` object:
+
+```{r plotExpression}
+plotExpression(sce, features = c("PIN", "CDH"), exprs_values = "exprs", other_fields = "ImageNumber") +
+    facet_wrap(~ImageNumber)
+
+plotExpression(sce, features = c("PIN", "CDH"), x = "CellType", exprs_values = "exprs", 
+               colour_by = "CellType") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+plotExpression(sce, features = "CDH", x = "PIN", exprs_values = "exprs", 
+               colour_by = "CellType") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The `plotHeatmap` function provides a wrapper function to `pheatmap` to visualize expression counts.
+
+```{r plotHeatmap}
+library(viridis)
+plotHeatmap(sce, features = c("CDH", "PIN"), exprs_values = "exprs", colour_columns_by = "CellType")
+
+plotHeatmap(sce, features = c("CDH", "PIN"), exprs_values = "exprs", 
+            colour_columns_by = "CellType", columns = which(sce$CellType == "beta"))
+```
+
+The `plotReducedDims` function allows you to plot the different dimensionality reduced embeddings:
+
+```{r plotReducedDims}
+plotReducedDim(sce, "TSNE", colour_by = "CellType")
+plotReducedDim(sce, "TSNE", colour_by = "case")
+plotReducedDim(sce, "TSNE", colour_by = "PIN", by_exprs_values = "exprs")
+
+plotReducedDim(sce, "UMAP", colour_by = "CellType")
+plotReducedDim(sce, "UMAP", colour_by = "case")
+plotReducedDim(sce, "UMAP", colour_by = "PIN", by_exprs_values = "exprs")
+
+plotReducedDim(sce, "PCA", colour_by = "CellType")
+plotReducedDim(sce, "PCA", colour_by = "case")
+plotReducedDim(sce, "PCA", colour_by = "PIN", by_exprs_values = "exprs")
+```
+
+The good thing is that the returned plots are `ggplot2` objects and can be further altered.
 
 ## Clustering
 
