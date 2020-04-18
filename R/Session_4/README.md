@@ -44,6 +44,12 @@ Bioconductor packages are released twice a year - once in April/May, once in Oct
 Unless you are developing Bioconductor packages, you won't need to use Bioconductor devel.
 But here are more information: [Bioc devel](https://www.bioconductor.org/developers/how-to/useDevel/)
 
+## The toy dataset
+
+The toy data is kindly provided by Nicolas Damond.
+It contains expression data of 12274 cells and 38 proteins. 
+The raw files are stored in the [Data](../../Data) folder.
+
 ## The `SingleCellExperiment` class
 
 Here, I will use the `SingleCellExperiment` class object as an example for object-oriented data analysis in R.
@@ -54,6 +60,22 @@ To work with the object, I will mostly follow the [Orchestrating Single-Cell Ana
 **Of note:** The workflow was written for single-cell RNA sequencing data and some concepts (e.g. normalization) do not apply to CyTOF data analysis.
 
 Here, we will start with the [data analysis infrastructure](https://osca.bioconductor.org/data-infrastructure.html)
+
+
+
+## Dimensionality reduction
+
+
+## Visualization
+
+
+## Clustering
+
+knn
+
+Rphenograph
+
+flowSOM
 
 
 

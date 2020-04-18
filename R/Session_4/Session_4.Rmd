@@ -11,6 +11,13 @@ We will use the `SingleCellExperiment` class object as an example - however the 
 The `SingleCellExperiment` class is a so called `S4` class object and the prefered object type in Bioconductor.
 Check out [https://adv-r.hadley.nz/oo.html](https://adv-r.hadley.nz/oo.html) for in depth explanations on opbject-oriented programming in R.
 
+Why do we want to use the `SingleCellExperiment` object?
+
+* It allows consistent sub-setting of cells and markers without breaking the connection between expression counts and metadata
+* It allows efficient on-disk storing in form of `.rds` files
+* Everything is in one place
+* By now, more than 70 packages provide functions to alter the `SingleCellExperiment` object - you don't need to implement functions yourself
+
 ## Bioconductor
 
 Bioconductor provides tools for the analysis and comprehension of high-throughput genomic data. Bioconductor uses the R statistical programming language, and is open source and open development. It has two releases each year, and an active user community.
@@ -53,7 +60,64 @@ To work with the object, I will mostly follow the [Orchestrating Single-Cell Ana
 
 **Of note:** The workflow was written for single-cell RNA sequencing data and some concepts (e.g. normalization) do not apply to CyTOF data analysis.
 
-Here, we will start with the [data analysis infrastructure](https://osca.bioconductor.org/data-infrastructure.html)
+Here, we will start with the [data analysis infrastructure](https://osca.bioconductor.org/data-infrastructure.html) section of the OSCA workflow.
+
+### Read in data
+
+We will first read in the data that we want to analyse.
+For convenience, I stored the raw expression counts (mean pixel intensity per cell) in one .csv file, the marker-specific metadata in one .csv file and the cell-specific metadata in one .csv file.
+
+```{r read-in-data}
+# Read in counts
+pancreas_counts <- read.csv("~/Github/IntroDataAnalysis/Data/pancreas_counts.csv", 
+                            stringsAsFactors = FALSE, row.names = 1)
+head(pancreas_counts)
+dim(pancreas_counts)
+
+# Read in cell metadata
+cell_meta <- read.csv("~/Github/IntroDataAnalysis/Data/pancreas_cellmeta.csv", 
+                      stringsAsFactors = FALSE, row.names = 1)
+head(cell_meta)
+
+# Read in marker metadata
+marker_meta <- read.csv("~/Github/IntroDataAnalysis/Data/pancreas_markermeta.csv", 
+                      stringsAsFactors = FALSE, row.names = 1)
+head(marker_meta)
+```
+
+In most cases, it is safe to compare the order of rows and columns:
+
+```{r check-ordering}
+identical(rownames(pancreas_counts), rownames(cell_meta))
+identical(colnames(pancreas_counts), rownames(marker_meta))
+
+# Check why the colnames and rownames don't match
+colnames(pancreas_counts)
+rownames(marker_meta)
+
+# Fix colnames
+colnames(pancreas_counts) <- gsub("\\.", "-", colnames(pancreas_counts))
+identical(colnames(pancreas_counts), rownames(marker_meta))
+```
+
+In general, it is recommended not to use spaces or special characters when labelling markers or cells.
+
+### Build `SingleCellExperiment`
+
+As you can imagine, it would be a bit annoying to handle three different objects side-by-side.
+That's why we can store everything in one single container: the `SingleCellExperiment` object.
 
 
+## Dimensionality reduction
 
+
+## Visualization
+
+
+## Clustering
+
+knn
+
+Rphenograph
+
+flowSOM
