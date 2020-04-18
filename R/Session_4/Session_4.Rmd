@@ -102,13 +102,67 @@ identical(colnames(pancreas_counts), rownames(marker_meta))
 
 In general, it is recommended not to use spaces or special characters when labelling markers or cells.
 
-### Build `SingleCellExperiment`
+### Build `SingleCellExperiment` object
 
 As you can imagine, it would be a bit annoying to handle three different objects side-by-side.
 That's why we can store everything in one single container: the `SingleCellExperiment` object.
 
+```{r SingleCellExperiment}
+library(SingleCellExperiment)
+
+sce <- SingleCellExperiment(assays = list(counts = t(pancreas_counts)), colData = cell_meta)
+sce
+
+colnames(sce)
+rownames(sce)
+
+dim(sce)
+ncol(sce)
+nrow(sce)
+```
+
+The `SingleCellExperiment` stores cells in the columns and markers in rows.
+
+We can now also store the cell- and marker-specific metadata in the SCE object.
+These need to be `DataFrame` objects - a Bioconductor-specific class similar to `tibble`, `data.table` and `data.frame`.
+
+```{r SingleCellExperiment-2}
+library(S4Vectors)
+colData(sce) <- DataFrame(cell_meta)
+rowData(sce) <- DataFrame(marker_meta)
+
+sce
+```
+
+We have now successfully created a `SingleCellExperiment`!
+
+### Add other assays
+
+We have now stored the raw counts in the SCE object.
+
+```{r assay-1}
+assays(sce)
+assayNames(sce)
+dim(counts(sce))
+```
+
+For dimensionality reduction and clustering, it is often preferred to work with distributions that are normal-like.
+We can now also store transformed and scaled counts in the same object:
+
+```{r transformation}
+assay(sce, "exprs") <- asinh(counts(sce) / 1)
+assay(sce, "scaled") <- t( scale( t( assay(sce, "exprs") ) ) )
+
+rowMeans(assay(sce, "scaled"))
+rowVars(assay(sce, "scaled"))
+```
 
 ## Dimensionality reduction
+
+In this section, we will learn how to perform common dimensionality reduction methods using the `scater` package.
+We will start by peforming a principal component analysis.
+For this, we can use the `runPCA` function provided by the scater package.
+
 
 
 ## Visualization
