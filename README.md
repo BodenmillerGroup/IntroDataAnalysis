@@ -1,4 +1,4 @@
-# Introduction to data analysis in R and python
+# Introduction to biological data analysis in R and python
 
 The main purpose of this repository is to collect example data and instruction scripts to highlight key features of the R and python programming languages.
 Training sessions are divided into [R](../master/R), [python](../master/python) and [Git](../master/Git) training.
