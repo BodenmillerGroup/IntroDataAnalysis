@@ -318,3 +318,15 @@ metadata(sce)$experiment_info <- data.frame(sample_id = unique(colData(sce)$case
 CATALYST::plotDR(sce, dr = "TSNE", color_by = "meta8")
 ```
 
+## Summarizing the counts
+
+Finally, we can average the counts per cluster (or any other entry to `colData(sce)`).
+
+```{r}
+cur_average <- scater::aggregateAcrossCells(sce, ids = sce$snn_clusters, 
+                                            use_exprs_values = "counts", 
+                                            average = TRUE, subset_row = cur_features)
+assay(cur_average, "exprs") <- asinh(assay(cur_average, "counts") / 1)
+plotHeatmap(cur_average, exprs_values = "exprs", 
+            colour_columns_by = "snn_clusters")
+```
