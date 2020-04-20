@@ -1,5 +1,5 @@
 ---
-title: "Session 3: tidyverse and publication-ready figures"
+title: "Session 4: Bioconductor and the SingleCellExperiment"
 author: "Nils"
 date: "`r Sys.Date()`"
 output: html_notebook
