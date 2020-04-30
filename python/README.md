@@ -15,10 +15,12 @@ Replace `notebook.ipynb` with the IPython notebook file name you'd like to conve
 Every Friday, 10:00-12:00  
 https://zoom.us/j/854293838
 
-27.03. Programming with Python  
-03.04. The `numpy` package, plotting with `matplotlib`  
-10.04. Processing tabular data with `pandas`, image processing  
-17.04. Development environments, Q&A session
+1. 27.03. Programming with Python  
+2. 03.04. The `numpy` package, plotting with `matplotlib`  
+3. 10.04. Processing tabular data with `pandas`, image processing  
+4. 17.04. Image processing recap, development environments, Q&A session  
+5. 01.05. Object-oriented programming, exception handling & assertions  
+6. 08.05. Code organization, package management & virtual environments
 
 ## Prerequisites
 
