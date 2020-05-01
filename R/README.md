@@ -111,3 +111,17 @@ Also cool extension packages to ggplot are: [https://cran.r-project.org/web/pack
 To generate publication-ready figures, you also want to checkout [https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html), [https://rpkgs.datanovia.com/ggpubr/index.html](https://rpkgs.datanovia.com/ggpubr/index.html) and [https://github.com/thomasp85/patchwork](https://github.com/thomasp85/patchwork)
 
 
+## Session 4
+
+For further instructions, please see the `README` in [Session_4](./Session_4).
+
+## Session 5 - 7
+
+For these session, I will use the `workflowr` format.
+This means, that all necessary information can be found in [Session_5-7](./Session_5-7).
+
+Please make sure to have `workflowr` installed:
+
+```r
+install.packages("workflowr")
+```
