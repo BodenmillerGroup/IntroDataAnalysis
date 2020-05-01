@@ -1,0 +1,46 @@
+---
+title: "01-readData"
+author: "nilseling"
+date: "2020-05-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this file, I will read in example data and perform simple exploratory data analysis.
+The toy dataset again is the `iris` datasets that can be loaded via:
+
+```{r load-iris-and-libraries}
+library(ggplot2)
+data(iris)
+```
+
+I usually have to read in much more complex datasets and use the first .Rmd file of my `workflowr` project to read in the data and precess them for subsequent analysis.
+Also, I tend to first read in all necessary data and all libraries at the beginning of the script.
+Other people prefer reading in data/libraries whenever they are needed.
+
+## Explortory data analysis
+
+As an example, I will generate simple plots to highlight the data and the use of the `workflowr` package.
+
+Here, I will plot `Sepal.Length` vs `Sepal.Width` and colour point by species:
+
+```{r simple-plot}
+ggplot(iris) +
+    geom_point(aes(x = Sepal.Width, y = Sepal.Length, colour = Species))
+```
+
+## Save processed data
+
+In this example, I have not altered the data.
+But in more complex cases, I want to save the processed data to read them in in subsequent scripts.
+This can be done by storing them as .rds files:
+
+```{r save-data}
+saveRDS(object = iris, file = "data/iris.rds")
+```
+
+
+

@@ -145,6 +145,21 @@ It makes your code readable and avoids bugs.
 One thing that they don't mention:
 When writing markdown (and LaTeX), use one line per sentence - it makes your text readable on Github and does not interfere when compiling the document.
 
+## Testing the `workflowr` package
 
+Let's add a few lines of code to an analysis script in the `analysis/` folder.
+Open the .Rproj file in RStudio and type in your console:
 
+```r
+wflow_open("analysis/01-readData.Rmd")
+```
 
+More instructions are found in the newly generated file here: [01-readData.Rmd](./analysis/01-readData.Rmd)
+
+To build your workflow, run the follwowing code in your R console:
+
+```r
+wflow_build()
+```
+
+You can now commit the changes.
