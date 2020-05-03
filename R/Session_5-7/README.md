@@ -167,3 +167,26 @@ It furthermore records the `sessionInfo` at the end of each R session.
 Let's have a look at the `docs/` folder.
 
 You can now commit the changes.
+
+If you want to re-run the whole analysis, just delete all .html files in the `docs/` folder and type `wflow_publish`.
+
+### Adding the new page to the navigation bar
+
+To add the newly created page `01-readData` to the navigation bar when opening for example the `index.html` file, just open the `analysis/_site.yml` file.
+Here you can add the following lines:
+
+```bash
+- text: 01-readData
+  href: 01-readData.html
+```
+
+Since the navigation bar is part of each .html, you will need to delete all htmls in the `docs` folder and re-run the `wflow_build()` command.
+
+## Adding more complicated analysis chunks
+
+In the next section, I will show you how to generate "auxiliary" functions that can be sourced into  a `.Rmd` file.
+Let's open a new .Rmd file inside the workflow:
+
+```r
+wflow_open("analysis/02-analyseData.Rmd")
+```
