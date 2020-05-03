@@ -23,6 +23,7 @@ source("code/auxiliary.R")
 
 Here, we will use the `prcomp` function provided by the `stats` package.
 By default, values are not scaled (only centred) - however it is recommended to scale values to unit variance.
+The PCA projects each data point (each plant) onto the axes of highest variance.
 
 ```{r compute-pca}
 cur_pca <- prcomp(iris[,1:4], scale. = TRUE)
@@ -33,5 +34,8 @@ cur_pca <- prcomp(iris[,1:4], scale. = TRUE)
 Here, I will "over-engineer" an example for teaching porposes.
 However, take a look at [https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_pca.html](https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_pca.html) for nice ways of visualizing PCA (and other low dimensionality reduction results).
 
+```{r plotPCA}
+my_plotPCA(pca = cur_pca, colour_by = iris$Species)
+```
 
 

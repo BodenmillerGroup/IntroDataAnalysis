@@ -195,3 +195,7 @@ See further instructions in the newly generated file [here](./analysis/02-analys
 
 After calculating the PCA, I will open a new `.R` script in the `code/` folder that stored "auxiliary" (helper) functions.
 Take a look [here](./code/auxiliary.R).
+
+I added a `my_plotPCA` function that plots and colours the PCA based on a given input.
+I also added a hidden (marked by the dot at the beginning of `.inputCheck`) that checks the user input.
+This file can be sourced at the beginning of the data analysis script via the `source` function.
