@@ -7,6 +7,8 @@ navbar:
     href: index.html
   - text: About
     href: about.html
+  - text: 01-readData
+    href: 01-readData.html
   - text: License
     href: license.html
 output:
