@@ -162,4 +162,8 @@ To build your workflow, run the follwowing code in your R console:
 wflow_build()
 ```
 
+This command runs the different .Rmd files in the `analysis/` folder in separate R sessions and sets a common seed to make the analysis reproducible.
+It furthermore records the `sessionInfo` at the end of each R session.
+Let's have a look at the `docs/` folder.
+
 You can now commit the changes.
