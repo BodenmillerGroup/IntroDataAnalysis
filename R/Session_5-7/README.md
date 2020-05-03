@@ -176,7 +176,7 @@ To add the newly created page `01-readData` to the navigation bar when opening f
 Here you can add the following lines:
 
 ```bash
-- text: 01-readData
+- text: Reading in Data
   href: 01-readData.html
 ```
 
@@ -190,3 +190,8 @@ Let's open a new .Rmd file inside the workflow:
 ```r
 wflow_open("analysis/02-analyseData.Rmd")
 ```
+
+See further instructions in the newly generated file [here](./analysis/02-analyseData.Rmd).
+
+After calculating the PCA, I will open a new `.R` script in the `code/` folder that stored "auxiliary" (helper) functions.
+Take a look [here](./code/auxiliary.R).

@@ -7,8 +7,10 @@ navbar:
     href: index.html
   - text: About
     href: about.html
-  - text: 01-readData
+  - text: Reading in data
     href: 01-readData.html
+  - text: Data analysis
+    href: 02-analyseData.html
   - text: License
     href: license.html
 output:
