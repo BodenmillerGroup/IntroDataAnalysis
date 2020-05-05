@@ -25,12 +25,12 @@ my_plotPCA <- function(pca, colour_by){
   .inputCheck(pca, colour_by)
 
   # Build data frame
-  cur_df <- data.frame(PC1 = cur_pca$x[,1],
-                       PC2 = cur_pca$x[,2],
+  cur_df <- data.frame(PC1 = pca$x[,1],
+                       PC2 = pca$x[,2],
                        colour = colour_by)
 
   # Calculate the variance explained
-  cur_var <- cur_pca$sdev ^ 2
+  cur_var <- pca$sdev ^ 2
   cur_var_expl <- (cur_var / sum(cur_var)) * 100
   cur_var_expl <- round(cur_var_expl, digits = 2)
 

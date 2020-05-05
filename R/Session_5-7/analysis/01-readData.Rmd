@@ -9,7 +9,7 @@ editor_options:
 
 ## Introduction
 
-In this file, I will read in example data and perform simple exploratory data analysis.
+In this file, I will read in example data and perform simple exploratory data analysis. 
 The toy dataset again is the `iris` datasets that can be loaded via:
 
 ```{r load-iris-and-libraries}
