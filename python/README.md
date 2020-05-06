@@ -20,7 +20,7 @@ https://zoom.us/j/854293838
 3. 10.04. Processing tabular data with `pandas`, image processing  
 4. 17.04. Image processing recap, development environments, Q&A session  
 5. 01.05. Object-oriented programming, exception handling & assertions  
-6. 08.05. Code organization, package management & virtual environments
+6. 15.05. Code organization, package management & virtual environments
 
 ## Prerequisites
 
