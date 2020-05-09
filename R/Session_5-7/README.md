@@ -4,16 +4,23 @@ In the following sessions, I will keep code organized in a way how I would usual
 Based on the feedback received for the previous sessions, I will continue with the following topics:
 
 **Session 5:** 
+
 * Changes to R version 4.0
 * Introduction to the `workflowr` package
 * General recommendations on how to keep your code organized
 * How to write documented code and auxiliary functions
 
+To follow this session, please read through this README and see [here](./analysis/01-readData.Rmd) and [here](./analysis/02-analyseData.Rmd).
+
 **Session 6:**
-* Linear regression
-* Machine learning basics
+
+* Linear regression (simple linear regression, multiple linear regression, anova)
+* Machine learning basics (logistic regression, multinomial logistic regression, random forrest)
+
+To follow this session, please have a look at the [03-regression.Rmd](./analysis/03-regression.Rmd) script.
 
 **Session 7:**
+
 * More on `ggplot2` 
 * Reproducible and publication ready figures 
 
