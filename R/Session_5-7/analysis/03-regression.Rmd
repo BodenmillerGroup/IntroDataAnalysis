@@ -113,6 +113,48 @@ augment(stop_dist_model) %>%
 
 To fully understand, what the regression results mean, we will next calculate these values by hand.
 
+To achieve the best linear model fit, we want to minimize the sum of all squared distances between the regression line and the data points:
+
+$argmin \sum_{i=1}^n(y_i - f(x_i))^2 = argmin \sum_{i=1}^n(y_i - (\beta_0 + \beta_1x_i))^2$
+
+Note: the error is defined as: $\epsilon_i = y_i - (\beta_0 + \beta_1x_i)$
+We basically try to minimize the sum of squared errors.
+
+The full mathematical derivation can be found [here](https://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html)
+
+As a summary, we need to (i) calculate the partial derivatives of $(y_i - (\beta_0 + \beta_1x_i))^2$ for $\beta_0$ and $\beta_1$, (ii) set them to 0 and solve the resulting set of linear equations.
+
+The result is the following:
+
+$\hat{\beta}_1 = \dfrac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n(x_i-\bar{x})^2}=\dfrac{S_{xy}}{S_{xx}}$
+
+and
+
+$\hat{\beta}_0 = \bar{y} - \hat{\beta_1}\bar{x}$
+
+As homework, you can try to derive these equations.
+
+**Calculating the regression coefficients in R**
+
+We define the variables x and y to be in line with the math above:
+
+```{r regression-coefficients}
+x <- cars$speed
+y <- cars$dist
+
+Sxy <- sum((x - mean(x)) * (y - mean(y)))
+Sxx <- sum((x - mean(x)) ^ 2)
+
+beta_hat_1 <- Sxy / Sxx
+beta_hat_0 <- mean(y) - beta_hat_1 * mean(x)
+
+c(beta_hat_0, beta_hat_1)
+
+# Compare to fitted model
+stop_dist_model
+```
+
+
 
 
 ### Multiple linear regression
