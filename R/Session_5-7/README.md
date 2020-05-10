@@ -15,7 +15,6 @@ To follow this session, please read through this README and see [here](./analysi
 **Session 6:**
 
 * Linear regression (simple linear regression, multiple linear regression, anova)
-* Machine learning basics (logistic regression, multinomial logistic regression, random forrest)
 
 To follow this session, please have a look at the [03-regression.Rmd](./analysis/03-regression.Rmd) script.
 For the full extend of instructions, please visit [this](https://daviddalpiaz.github.io/appliedstats/) site.

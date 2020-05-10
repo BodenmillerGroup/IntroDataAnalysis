@@ -11,7 +11,7 @@ editor_options:
 
 In todays session, we will focus on applied statistics in R. 
 As an example (statistics is a huuuuuuuuge field), I will go through different regression models.
-In particular, these will be simple linear regression, multiple linear regression, analysis of variance, logistic regression, multinomial logistic regression and random forrest (as popular non-parametric regression example).
+In particular, these will be simple linear regression, multiple linear regression and analysis of variance.
 I will also try to explain the underlying mathematical derivations to some extend.
 This tutorial is heavily based on the instructions [here](https://daviddalpiaz.github.io/appliedstats/).
 
@@ -178,27 +178,85 @@ An estimate for $\sigma^2$ is defined as:
 
 $s_e^2 = \frac{1}{n-2}\sum_{i=1}^n(y_i - \hat{y})^2=\frac{1}{n-2}\sum_{i=1}^n\epsilon_i^2$
 
-
 We can now calculate this in R:
 
+```{r }
+s2_e <- sum(manual_residuals^2) / (length(manual_residuals) - 2)
+```
+
+The denominatore here represents the "degrees of freedom" of the model, which in this case is defined as the number of observations minus the number of model parameters.
+
+The "residual standard error" of the model is the standard deviation:
+
+```{r sre}
+sqrt(s2_e)
+```
+
+This means the estimates of the mean stopping distance are on average 15.38 meters off.
+
+**Variance decomposition**
+
+We can decompose the variation of the data points ($y_i$) from the sample mean ($\bar{y}$) as follows:
+
+$y_i - \bar{y} = (y_i - \hat{y_i}) + (\hat{y_i} - \bar{y})$
+
+By complicated calculation (see [here](https://en.wikipedia.org/wiki/Explained_sum_of_squares#Partitioning_in_the_general_ordinary_least_squares_model)), we can show that:
 
 
+$\sum_{i=1}^n(y_i - \bar{y})^2 = \sum_{i=1}^n(y_i - \hat{y_i})^2 + \sum_{i=1}^n(\hat{y_i} - \bar{y})^2$
 
+which we can also simply write as:
+
+SST = SSE + SSReg
+
+Here, SST means "sum of squares total", SSE means "sum of squares error" and SSReg means "sum of squares regression".
+
+We can now compute the individual values:
+
+```{r variance-values}
+y_hat <- beta_hat_0 + beta_hat_1 * x
+
+SST <- sum((y - mean(y)) ^ 2)
+SSE <- sum((y - y_hat) ^ 2)
+SSReg <- sum((y_hat - mean(y)) ^ 2)
+```
+
+We calculated these measures to derive the "coefficient of determination" also denoted as $R^2$.
+
+This measure can be calculated as follows:
+
+```{r coef-determination}
+R2 <- SSReg / SST
+```
+
+One can understand the coefficent of determination as the proportion of total variance that the model captures.
+
+The adjusted $R^2$ accounts for the degrees of freedom in the model since the $R^2$ value by default increases when more explanatory variables are added:
+
+$\bar{R}^2 = 1 - (1 - R^2)\dfrac{n - 1}{n - p - 1}$
+
+where $R^2$ is the coefficient of determination, $n$ is the number of samples and $p$ is the number of explanatory variables excluding the intercept. 
+
+In R:
+
+```{r adj-coef-determination}
+adjR2 <- 1 - (1 - R2) * ((nrow(cars) - 1) / (nrow(cars) - 1 - 1))
+```
+
+### Inference of simple linear regression
+
+**Defining the regression parameters as random variables**
+
+**Calculating the standard error**
+
+**Calculating the t-statistic**
+
+**Calculating the significance level**
+
+**Calculating the F-statistics**
 
 
 ### Multiple linear regression
 
 ### ANOVA
-
-## Classification examples
-
-### Logistic regression
-
-### Multinomial logisitic regression
-
-### Random forrest
-
-```{r}
-
-```
 
