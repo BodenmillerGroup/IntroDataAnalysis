@@ -247,14 +247,128 @@ adjR2 <- 1 - (1 - R2) * ((nrow(cars) - 1) / (nrow(cars) - 1 - 1))
 
 **Defining the regression parameters as random variables**
 
+At this point, we will not go through the mathematical derivation of the following equations.
+Have a look [here](https://daviddalpiaz.github.io/appliedstats/inference-for-simple-linear-regression.html) and [here](https://en.wikipedia.org/wiki/Proofs_involving_ordinary_least_squares#Least_squares_estimator_for_%CE%B2) for more proofs.
+
+What we need to know is that $\hat{\beta}_0$ and$\hat{\beta}_1$ can be written as a linear combination of the response variables $Y_i$.
+We know that $Y_i$ is normal distributed, therefore $\hat{\beta}_0$ and$\hat{\beta}_1$ are also normal distributed:
+
+\[
+\hat{\beta}_1 \sim N\left(  \beta_1, \ \frac{\sigma^2}{\sum_{i = 1}^{n}(x_i - \bar{x})^2} \right).
+\]
+
+and 
+
+\[
+\hat{\beta}_0 = \sim N\left(  \beta_0, \ \frac{\sigma^2 \sum_{i = 1}^{n}x_i^2}{n \sum_{i = 1}^{n}(x_i - \bar{x})^2} \right).
+\]
+
+We can now standardize these equations (computing the z-score):
+
+\[
+\frac{\hat{\beta}_0 - \beta_0}{\text{SD}[\hat{\beta}_0]} \sim N(0, 1)
+\]
+
+and
+
+\[
+\frac{\hat{\beta}_1 - \beta_1}{\text{SD}[\hat{\beta}_1]} \sim N(0, 1)
+\]
+
+where
+
+\[
+\text{SD}[\hat{\beta}_0] = \sigma\sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}
+\]
+
+and
+
+\[
+\text{SD}[\hat{\beta}_1] = \frac{\sigma}{\sqrt{S_{xx}}}.
+\]
+
 **Calculating the standard error**
+
+However, we don't know the true standard deviation $\sigma$ of the model.
+Therefore, we will plug in the "residual standard error" as calculated above.
+
+\[
+\text{SE}[\hat{\beta}_0] = s_e\sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}
+\]
+
+\[
+\text{SE}[\hat{\beta}_1] = \frac{s_e}{\sqrt{S_{xx}}}
+\]
+
+Here, $S_{xx} = \sum_{i = 1}^{n}(x_i - \bar{x})^2$
+
+We can now calculate these in R:
+
+```{r standard-errors}
+Sxx <- sum((x - mean(x)) ^ 2)
+s_e <- sqrt(s2_e) 
+n <- nrow(cars)
+  
+SE_beta_hat_0 <- s_e * sqrt(1 / n + mean(x) ^ 2 / Sxx)
+SE_beta_hat_1 <- s_e / sqrt(Sxx)
+
+c(SE_beta_hat_0, SE_beta_hat_1)
+summary(stop_dist_model)$coefficients
+```
+
+We can [proof](https://daviddalpiaz.github.io/appliedstats/inference-for-simple-linear-regression.html) that 
+
+\[
+\frac{\hat{\beta}_0 - \beta_0}{\text{SE}[\hat{\beta}_0]} \sim t_{n-2}
+\]
+
+and
+
+\[
+\frac{\hat{\beta}_1 - \beta_1}{\text{SE}[\hat{\beta}_1]} \sim t_{n-2}
+\]
+
+follows a $t$ distribution with $n - 2$ degrees of freedom.
+The $t$ distribution is similar to a normal distribution with heavier tails.
 
 **Calculating the t-statistic**
 
+Based on the equation above, we can now calculate the t-statistic based on a given hypothesis test:
+
+\[
+H_0: \beta_0 = \beta_{00} \quad \text{vs} \quad H_1: \beta_0 \neq \beta_{00}
+\]
+
+The standard hypothesis for a linear regression model is of the form:
+
+\[
+H_0: \beta_0 = 0 \quad \text{vs} \quad H_1: \beta_0 \neq 0
+\]
+
+We can therefore calculate the t-statistic in the form:
+
+\[
+t = \frac{\hat{\beta}_1-0}{\text{SE}[\hat{\beta}_1]}
+\]
+
+And in R:
+
+```{r}
+t_beta_hat_0 <- (beta_hat_0 - 0) / SE_beta_hat_0
+t_beta_hat_1 <- (beta_hat_1 - 0) / SE_beta_hat_1
+```
+
 **Calculating the significance level**
 
-**Calculating the F-statistics**
+Since we know, that this measure follows a t distribution, we can now calculate the "p value".
+The p-value here means the probability of rejecting the null hypothesis even though the null hypothesis is true.
+This also considered to performing a type I error.
+The p-value can be calculated using the `pt` function and multiplying the value by 2 to account for a two-sided test.
 
+```{r p-value}
+p_beta_hat_0 <- 2 * pt(abs(t_beta_hat_0), df = nrow(cars) - 2, lower.tail = FALSE)
+p_beta_hat_0 <- 2 * pt(abs(t_beta_hat_1), df = nrow(cars) - 2, lower.tail = FALSE)
+```
 
 ### Multiple linear regression
 

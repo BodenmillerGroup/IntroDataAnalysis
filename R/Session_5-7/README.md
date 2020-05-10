@@ -18,6 +18,8 @@ To follow this session, please read through this README and see [here](./analysi
 
 To follow this session, please have a look at the [03-regression.Rmd](./analysis/03-regression.Rmd) script.
 For the full extend of instructions, please visit [this](https://daviddalpiaz.github.io/appliedstats/) site.
+The statistics lecture was written by David Dalpiaz and is distributed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+I have only taken parts of the original document.
 
 Please in install the `broom` package for tidying your fitting results:
 
