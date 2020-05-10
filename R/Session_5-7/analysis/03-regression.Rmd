@@ -154,6 +154,20 @@ c(beta_hat_0, beta_hat_1)
 stop_dist_model
 ```
 
+**Calculating the residual error in R**
+
+We can also manually calculate the residual error in R.
+The residuals can be obtained from the modelled fit using the `residuals` accessor function:
+
+```{r residual-error}
+stop_dist_residuals <- residuals(stop_dist_model)
+
+manual_residuals <- y - (beta_hat_0 + beta_hat_1 * x)
+
+# Test for equality
+all.equal(as.numeric(stop_dist_residuals), manual_residuals)
+```
+
 
 
 
