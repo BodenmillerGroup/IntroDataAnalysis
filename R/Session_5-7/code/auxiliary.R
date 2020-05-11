@@ -40,3 +40,30 @@ my_plotPCA <- function(pca, colour_by){
     xlab(paste0("PC1 ", cur_var_expl[1], "% var explained")) +
     ylab(paste0("PC2 ", cur_var_expl[2], "% var explained"))
 }
+
+# Function to read in example data for multiple linear regression example
+# This code has been copied from here:
+# https://daviddalpiaz.github.io/appliedstats/multiple-linear-regression.html
+
+readInCars <- function(){
+  # read the data from the web
+  autompg = read.table(
+    "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data",
+    quote = "\"",
+    comment.char = "",
+    stringsAsFactors = FALSE)
+  # give the dataframe headers
+  colnames(autompg) <- c("mpg", "cyl", "disp", "hp", "wt", "acc", "year", "origin", "name")
+  # remove missing data, which is stored as "?"
+  autompg <- subset(autompg, autompg$hp != "?")
+  # remove the plymouth reliant, as it causes some issues
+  autompg <- subset(autompg, autompg$name != "plymouth reliant")
+  # give the dataset row names, based on the engine, year and name
+  rownames(autompg) <- paste(autompg$cyl, "cylinder", autompg$year, autompg$name)
+  # remove the variable for name, as well as origin
+  autompg <- subset(autompg, select = c("mpg", "cyl", "disp", "hp", "wt", "acc", "year"))
+  # change horsepower from character to numeric
+  autompg$hp <- as.numeric(autompg$hp)
+
+  return(autompg)
+}

@@ -190,6 +190,9 @@ The "residual standard error" of the model is the standard deviation:
 
 ```{r sre}
 sqrt(s2_e)
+
+# Compare to model
+summary(stop_dist_model)$sigma
 ```
 
 This means the estimates of the mean stopping distance are on average 15.38 meters off.
@@ -355,7 +358,9 @@ And in R:
 
 ```{r}
 t_beta_hat_0 <- (beta_hat_0 - 0) / SE_beta_hat_0
+t_beta_hat_0
 t_beta_hat_1 <- (beta_hat_1 - 0) / SE_beta_hat_1
+t_beta_hat_1
 ```
 
 **Calculating the significance level**
@@ -367,10 +372,23 @@ The p-value can be calculated using the `pt` function and multiplying the value 
 
 ```{r p-value}
 p_beta_hat_0 <- 2 * pt(abs(t_beta_hat_0), df = nrow(cars) - 2, lower.tail = FALSE)
-p_beta_hat_0 <- 2 * pt(abs(t_beta_hat_1), df = nrow(cars) - 2, lower.tail = FALSE)
+p_beta_hat_0
+p_beta_hat_1 <- 2 * pt(abs(t_beta_hat_1), df = nrow(cars) - 2, lower.tail = FALSE)
+p_beta_hat_1
 ```
 
-### Multiple linear regression
+**Confidence intervals**
 
-### ANOVA
+We can now also compute the confidence interval of the regression parameters:
+
+```{r confi-interval}
+confint(stop_dist_model, level = 0.99)
+```
+
+Meaning: we are to 99% confident that the value for the regression parameters lies within the given interval.
+
+## Further reading
+
+Statistical modelling is quite complex and out-of-scope of this introduction course.
+However, I can highly recommend reading the remaining chapters of the [Applied statistics in R course](https://daviddalpiaz.github.io/appliedstats/multiple-linear-regression.html)
 
