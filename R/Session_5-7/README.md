@@ -27,6 +27,8 @@ Please in install the `broom` package for tidying your fitting results:
 install.packages("broom")
 ```
 
+For more complex and non-parametric models, have a look at the [caret](https://topepo.github.io/caret/index.html) package.
+
 **Session 7:**
 
 * More on `ggplot2` 
