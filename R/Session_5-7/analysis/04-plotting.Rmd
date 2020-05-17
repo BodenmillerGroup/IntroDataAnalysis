@@ -212,8 +212,28 @@ p2
 Next, we will create a simple boxplot to visualize `ggplot2`'s functionality:
 
 ```{r boxplot-1}
-
+p3 <- ggplot(iris) + 
+  geom_boxplot(aes(x = Species, y = Sepal.Length, fill = Species), 
+               outlier.colour = NA, notch = TRUE) + 
+  geom_jitter(aes(x = Species, y = Sepal.Length), width = 0.1, alpha = 0.7) + 
+  scale_fill_manual(values = colour_vec, name = "Iris species",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  xlab("") +
+  scale_x_discrete(breaks = c("setosa", "versicolor", "virginica"),
+                   labels = c("Setosa", "Versicolor", "Virginica")) +
+  theme(panel.background = element_blank(),
+        legend.background = element_rect(colour = "black"),
+        legend.position = c(0.05, 0.95), 
+        legend.justification = c("left", "top"),
+        axis.line = element_line(),
+        axis.ticks = element_line(colour = "black"),
+        axis.text.y = element_text(colour = "black", size = 9),
+        axis.text.x = element_text(colour = "black", size = 12),
+        axis.title = element_text(colour = "black", size = 12))
+p3
 ```
+
+Of note: the "notch" indicates the 95% confidence interval of the median. The two "hindges" represent the 25% and 75% quantiles of the distribution, the upper whisker extends to the value not larger than upper hinge + 1.5 times the interquartile range of the values and the lower whisker extends to the value not smaller than lower hinge - 1.5 times the IQR.
 
 ## Barplot
 
