@@ -1,0 +1,60 @@
+---
+title: "04-plotting"
+author: "nilseling"
+date: "2020-05-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In todays session, we will go through a number of common plot types and will learn how to generate them using `ggplot2` and other packages of the "ggverse".
+For simplicity, I will again use the `iris` dataset and will use this to highlight a couple of different plots.
+
+## Load data and libraries
+
+```{r}
+data(iris)
+library(ggplot2)
+```
+
+As a reminder, the general `ggplot2` call looks like this:
+
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(mapping = aes(<MAPPING>),
+    stat = <STAT>, position = <POSITION>) + 
+  <COORDINATE_FUNCTION> +
+  <FACET_FUNCTION> +
+  <THEME_FUNCTION>
+
+## Scatterplot
+
+We will start off with a very simple scatter plot displaying the `Sepal.Length` versus the `Sepal.Width` entry:
+
+```{r scatter-1}
+p1 <- ggplot(data = iris) + 
+   geom_point(aes(x = Sepal.Length, y = Sepal.Width, colour = Species))
+p1
+```
+
+
+With regression lines
+
+Facetting
+
+## Custom PCA plot
+
+## Boxplot
+
+## Barplot
+
+## Heatmap
+
+Using `ggplotify`
+
+## Stitiching it together
+
+Using `cowplot` and `patchwork`.
+
+

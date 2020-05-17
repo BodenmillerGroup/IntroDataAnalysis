@@ -14,7 +14,7 @@ To follow this session, please read through this README and see [here](./analysi
 
 **Session 6:**
 
-* Linear regression (simple linear regression, multiple linear regression, anova)
+* Linear regression (simple linear regression)
 
 To follow this session, please have a look at the [03-regression.Rmd](./analysis/03-regression.Rmd) script.
 For the full extend of instructions, please visit [this](https://daviddalpiaz.github.io/appliedstats/) site.
@@ -33,6 +33,19 @@ For more complex and non-parametric models, have a look at the [caret](https://t
 
 * More on `ggplot2` 
 * Reproducible and publication ready figures 
+
+To follow this session, please install the following packages:
+
+```r
+install.packages(c("ggsci", "ggplotify", "RColourBrewer", "cowplot", "patchwork"))
+```
+
+To follow the session, please have a look at the [04-plotting](./analysis/04-plotting.Rmd) script.
+
+For a full introduction to `ggplot2` there exist multiple tutorials online:
+
+* [https://ggplot2.tidyverse.org/](https://ggplot2.tidyverse.org/)
+* [http://r-statistics.co/ggplot2-Tutorial-With-R.html](http://r-statistics.co/ggplot2-Tutorial-With-R.html)
 
 ## Changes in R version 4.0
 
