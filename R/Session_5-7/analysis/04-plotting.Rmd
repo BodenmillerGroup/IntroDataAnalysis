@@ -38,12 +38,152 @@ p1 <- ggplot(data = iris) +
 p1
 ```
 
+For simple tasks, we can also use the "quickplot" `qplot` function:
 
-With regression lines
+```{r qplot}
+qplot(x = Sepal.Length, y = Sepal.Width, data = iris, color = Species)
+```
 
-Facetting
+### Adding other layers
+
+We can now add other layers to the plot.
+Since we can see a linear relationship between Sepal width and Sepal height, we can add some regression lines:
+
+```{r scatter-2}
+p1 <- p1 + geom_smooth(aes(x = Sepal.Length, y = Sepal.Width, colour = Species), 
+                       method = "lm", formula = "y ~ x")
+p1
+```
+
+By default, `geom_smooth` will add the 95% confidence interval to the regression line.
+By specifying `colour = Species`, a linear regression fit is perform for each level/group of `Species`.
+
+### Facetting
+
+To facilitate visual representation of the three groups, facetting can split the panels based on certain levels:
+
+```{scatter-3}
+p1 <- p1 + facet_wrap(. ~ Species)
+p1
+```
+
+As a reminder, `facet_wrap` is used when splitting by a single variable.
+`facet_grid` is used when splitting based on multiple variables.
+
+### Changing the colour scale
+
+Next, we want to change the colour to a more appealing scale.
+There are multiple ways to selecting colours.
+I like the `RColourBrewer` and `ggsci` packages for discrete colour choice:
+Here are some nice resources:
+
+* [https://colorbrewer2.org/](https://colorbrewer2.org/)
+* [ggsci](https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html)
+* [RColourBrewer](https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/)
+
+Here, I will use the Nature Publishing Group colour suggestions from the `ggsci` package:
+
+```{r scatter-4}
+library(ggsci)
+p1 <- p1 + scale_colour_npg()
+p1
+```
+
+The colours look nicer bu still not perfect.
+It is often advisable to store the colour mapping in form of a vector:
+
+```{r scatter-5}
+library(RColorBrewer)
+display.brewer.all(type = "qual", colorblindFriendly = TRUE)
+cur_palette <- brewer.pal(n = 3, name = "Set2")
+colour_vec <- c(setosa = cur_palette[1], 
+                versicolor = cur_palette[2], 
+                virginica = cur_palette[3])
+p1 <- p1 + scale_colour_manual(values = colour_vec)
+p1
+```
+
+We have now changed the colour of the points but are still not quite happy with the plot.
+
+### Changing the theme and aesthetics
+
+First, we might want to use nicer looking points.
+For this, we will unfortunatelly need to re-create the whole plot:
+
+```{r scatter-6}
+p1 <- ggplot(data = iris) + 
+   geom_point(aes(x = Sepal.Length, y = Sepal.Width, fill = Species), 
+              shape = 21, size = 2) +
+  geom_smooth(aes(x = Sepal.Length, y = Sepal.Width, colour = Species), 
+                       method = "lm", formula = "y ~ x") +
+  facet_wrap(. ~ Species, 
+             labeller = labeller(Species = c("setosa" = "Setosa", # Re-label facet names
+                                             "versicolor" = "Versicolor", 
+                                             "virginica" = "Virginica"))) +
+  scale_fill_manual(values = colour_vec, name = "Iris species",
+                    labels = c("Setosa", "Versicolor", "Virginica")) + 
+  scale_colour_manual(values = colour_vec, name = "Iris species", 
+                      labels = c("Setosa", "Versicolor", "Virginica"))
+p1
+```
+
+Of note, the "colour" of shape `21` has to be adjusted using the `fill` argument.
+
+Finally, we will change the appearance of the plot:
+
+```{r scatter-7}
+p1 <- p1 + xlab("Sepal Width") + ylab("Sepal Height") +
+  theme(panel.background = element_blank(), # removes gray colour from the background
+        panel.border = element_rect(fill = NA), # Puts a border around the panels
+        legend.background = element_rect(colour = "black"), # puts a border around the legend
+        legend.position = c(.67, .80), # Re-positions the legend
+        axis.line = element_line(), # Adds axis line
+        axis.ticks = element_line(colour = "black"), # Re-colours axis ticks
+        axis.text = element_text(colour = "black", size = 9), # Re-colours and re-sizes axis tick labels
+        axis.title = element_text(colour = "black", size = 12), # Re-colours and re-sizes axis title
+        strip.background = element_blank(), # Remove background from strip
+        strip.text = element_text(colour = "black", size = 12)) # Re-colours and re-sizes strip text
+p1
+```
+
+There are nearly infinite adjustable parameters associated to theme: [https://ggplot2.tidyverse.org/reference/theme.html](https://ggplot2.tidyverse.org/reference/theme.html)
+
+I commonly call the entire `ggplot2` function in one call:
+
+```{r create-iris-scatter}
+p1 <- ggplot(data = iris) + 
+   geom_point(aes(x = Sepal.Length, y = Sepal.Width, fill = Species), 
+              shape = 21, size = 2) +
+  geom_smooth(aes(x = Sepal.Length, y = Sepal.Width, colour = Species), 
+                       method = "lm", formula = "y ~ x") +
+  facet_wrap(. ~ Species, 
+             labeller = labeller(Species = c("setosa" = "Setosa", 
+                                             "versicolor" = "Versicolor", 
+                                             "virginica" = "Virginica"))) +
+  scale_fill_manual(values = colour_vec, name = "Iris species",
+                    labels = c("Setosa", "Versicolor", "Virginica")) + 
+  scale_colour_manual(values = colour_vec, name = "Iris species", 
+                      labels = c("Setosa", "Versicolor", "Virginica")) +
+  xlab("Sepal Width") + ylab("Sepal Height") +
+  theme(panel.background = element_blank(), 
+        panel.border = element_rect(fill = NA),
+        legend.background = element_rect(colour = "black"),
+        legend.position = c(.67, .80), 
+        axis.line = element_line(),
+        axis.ticks = element_line(colour = "black"),
+        axis.text = element_text(colour = "black", size = 9),
+        axis.title = element_text(colour = "black", size = 12),
+        strip.background = element_blank(),
+        strip.text = element_text(colour = "black", size = 12))
+p1
+```
 
 ## Custom PCA plot
+
+Two sessions ago, we have created a custom function that plots a certain pca.
+We can now use this to display a pca of the iris dataset:
+
+
 
 ## Boxplot
 
