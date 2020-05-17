@@ -183,9 +183,37 @@ p1
 Two sessions ago, we have created a custom function that plots a certain pca.
 We can now use this to display a pca of the iris dataset:
 
+```{r pca-plot}
+source("code/auxiliary.R")
+cur_pca <- prcomp(iris[,1:4], scale. = TRUE)
+p2 <- my_plotPCA(cur_pca, colour_by = iris$Species)
+p2
+```
 
+Since we coded the function in a way that a `ggplot2` object is returned, we can now make it look prettier:
+
+```{r pca-plot-2}
+p2 <- p2 + scale_colour_manual(values = colour_vec, name = "Iris species",
+                    labels = c("Setosa", "Versicolor", "Virginica")) +
+  coord_fixed() + 
+  theme(panel.background = element_blank(),
+        legend.background = element_rect(colour = "black"),
+        legend.position = c(1, 1), 
+        legend.justification = c("right", "top"),
+        axis.line = element_line(),
+        axis.ticks = element_line(colour = "black"),
+        axis.text = element_text(colour = "black", size = 9),
+        axis.title = element_text(colour = "black", size = 12))
+p2
+```
 
 ## Boxplot
+
+Next, we will create a simple boxplot to visualize `ggplot2`'s functionality:
+
+```{r boxplot-1}
+
+```
 
 ## Barplot
 
