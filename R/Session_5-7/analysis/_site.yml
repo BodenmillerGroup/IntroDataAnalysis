@@ -11,6 +11,10 @@ navbar:
     href: 01-readData.html
   - text: Data analysis
     href: 02-analyseData.html
+  - text: Regression examples
+    href: 03-regression.html
+  - text: Final figure
+    href: 04-plotting.html
   - text: License
     href: license.html
 output:

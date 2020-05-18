@@ -241,6 +241,7 @@ Next, we'll create a barplot visualizing the different measurements for each spe
 We also want to add the standard error of the mean to the bar chart - for this we need to modify the data.frame a bit:
 
 ```{r pre-process}
+library(tidyverse)
 cur_dat <- iris %>%
     pivot_longer(cols = colnames(iris)[1:4]) %>%
     group_by(Species, name) %>%
@@ -289,14 +290,14 @@ I personally like to use `pheatmap` but the `ComplexHeatmap` package is also ver
 ```{r}
 library(pheatmap)
 cur_dat <- t(iris[1:4])
-colnames(cur_data) <- rownames(iris)
-p5 <- pheatmap(cur_data, scale = "row", 
+colnames(cur_dat) <- rownames(iris)
+p5 <- pheatmap(cur_dat, scale = "row", 
          color = colorRampPalette(c("dark blue", "white", "dark red"))(100),
-         annotation_col = data.frame(row.names = colnames(cur_data),
+         annotation_col = data.frame(row.names = colnames(cur_dat),
                                      Species = iris$Species),
          show_colnames = FALSE,
          annotation_colors = list(Species = colour_vec),
-         labels_row = sub("\\.", " ", rownames(cur_data)))
+         labels_row = sub("\\.", " ", rownames(cur_dat)))
 ```
 
 ## Stitiching it together
@@ -309,11 +310,22 @@ In the last part, I will show you how to put everything together using the `cowp
 First, I will show you how `cowplot` works.
 I will directly create nested `plot_grid` objects.
 
-```{r}
+```{r cowplot}
 library(cowplot)
 
 upper_row <- p1
-middle_row <- plot_grid(p2, p3, p4, ncol = 3, labels = c("B", "C", "D"))
+middle_row <- plot_grid(p2 + theme(legend.title = element_text(size = 10),
+                                   legend.text = element_text(size = 8),
+                                   legend.key.size = unit(0.1, "cm"),
+                                   legend.position = c(1, 1.3)), 
+                        p3 + theme(legend.title = element_text(size = 10),
+                                   legend.text = element_text(size = 8),
+                                   legend.key.width = unit(0.3, "cm")), 
+                        p4 + theme(legend.title = element_text(size = 8),
+                                   legend.text = element_text(size = 6),
+                                   legend.position = c(0.05, 1.1),
+                                   legend.key.size = unit(0.3, "cm")), 
+                        ncol = 3, labels = c("B", "C", "D"))
 bottom_row <- p5$gtable
 
 final <- plot_grid(upper_row, middle_row, bottom_row, nrow = 3, labels = c("A", "", "E"))
@@ -321,4 +333,5 @@ final <- plot_grid(upper_row, middle_row, bottom_row, nrow = 3, labels = c("A", 
 ggsave(filename = "docs/final_figures/Fig_1.pdf", plot = final, width = 210, height = 290, units = "mm")
 ```
 
-
+I have tried assembling the same figure using `patchwork` but didn't succeed :(
+However, check it out at: [patchwork](https://patchwork.data-imaginist.com/articles/patchwork.html)

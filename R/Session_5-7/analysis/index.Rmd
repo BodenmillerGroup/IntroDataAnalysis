@@ -8,4 +8,4 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Welcome to "Introduction to Data Analysis" using R at the DQBM of UZH.

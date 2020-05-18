@@ -7,4 +7,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+This project is dedicated to train students and postdocs at the Department of Quantitative Biomedicine at the University of Zurich how to use `workflowr`. 
+It also goes through the basics of functional programming in R, simple linear regression and producing publication-ready figures in R.
+
