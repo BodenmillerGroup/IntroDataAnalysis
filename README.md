@@ -22,3 +22,7 @@ To maximise the time spend on actual hands-on training in both languages, please
 * Nils Eling (R sessions)
 * Jonas Windhager (Python sessions)
 * Laura Kinkead (Version control with Git)
+
+## License
+
+This work is distributed under the [CC-BY-NC-SA-4.0](../master/LICENSE) license.
