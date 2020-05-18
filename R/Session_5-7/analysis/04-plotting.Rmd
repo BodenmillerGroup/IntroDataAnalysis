@@ -47,7 +47,7 @@ qplot(x = Sepal.Length, y = Sepal.Width, data = iris, color = Species)
 ### Adding other layers
 
 We can now add other layers to the plot.
-Since we can see a linear relationship between Sepal width and Sepal height, we can add some regression lines:
+Since we can see a linear relationship between Sepal width and Sepal length, we can add some regression lines:
 
 ```{r scatter-2}
 p1 <- p1 + geom_smooth(aes(x = Sepal.Length, y = Sepal.Width, colour = Species), 
@@ -132,7 +132,7 @@ Of note, the "colour" of shape `21` has to be adjusted using the `fill` argument
 Finally, we will change the appearance of the plot:
 
 ```{r scatter-7}
-p1 <- p1 + xlab("Sepal Width") + ylab("Sepal Height") +
+p1 <- p1 + xlab("Sepal Width") + ylab("Sepal Length") +
   theme(panel.background = element_blank(), # removes gray colour from the background
         panel.border = element_rect(fill = NA), # Puts a border around the panels
         legend.background = element_rect(colour = "black"), # puts a border around the legend
@@ -164,7 +164,7 @@ p1 <- ggplot(data = iris) +
                     labels = c("Setosa", "Versicolor", "Virginica")) + 
   scale_colour_manual(values = colour_vec, name = "Iris species", 
                       labels = c("Setosa", "Versicolor", "Virginica")) +
-  xlab("Sepal Width") + ylab("Sepal Height") +
+  xlab("Sepal Width") + ylab("Sepal Length") +
   theme(panel.background = element_blank(), 
         panel.border = element_rect(fill = NA),
         legend.background = element_rect(colour = "black"),
@@ -256,7 +256,7 @@ Now, we can plot the barplot:
 ```{r barplot}
 # Re-order the levels
 cur_dat$Measurement <- factor(cur_dat$name, levels = c("Petal.Width", "Petal.Length", "Sepal.Width", "Sepal.Length"))
-ggplot(cur_dat, aes(x = Species, y = mean_val, fill = Measurement)) + 
+p4 <- ggplot(cur_dat, aes(x = Species, y = mean_val, fill = Measurement)) + 
   geom_bar(position = position_dodge(),
                            stat = "identity") +
   geom_errorbar(aes(ymin = mean_val - ci_t, ymax = mean_val + ci_t),
@@ -275,14 +275,50 @@ ggplot(cur_dat, aes(x = Species, y = mean_val, fill = Measurement)) +
         axis.text.y = element_text(colour = "black", size = 9),
         axis.text.x = element_text(colour = "black", size = 12, angle = 45, hjust = 1),
         axis.title = element_text(colour = "black", size = 12))
+p4
 ```
 
 ## Heatmap
 
-Using `ggplotify`
+Finally, we can visualize the data points in form of a heatmap.
+I personally like to use `pheatmap` but the `ComplexHeatmap` package is also very nice:
+
+* [pheatmap](https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf)
+* [ComplexHeatmap](https://jokergoo.github.io/ComplexHeatmap-reference/book/)
+
+```{r}
+library(pheatmap)
+cur_dat <- t(iris[1:4])
+colnames(cur_data) <- rownames(iris)
+p5 <- pheatmap(cur_data, scale = "row", 
+         color = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+         annotation_col = data.frame(row.names = colnames(cur_data),
+                                     Species = iris$Species),
+         show_colnames = FALSE,
+         annotation_colors = list(Species = colour_vec),
+         labels_row = sub("\\.", " ", rownames(cur_data)))
+```
 
 ## Stitiching it together
 
-Using `cowplot` and `patchwork`.
+In the last part, I will show you how to put everything together using the `cowplot` or `patchwork` package:
+
+* [cowplot](https://wilkelab.org/cowplot/index.html)
+* [patchwork](https://patchwork.data-imaginist.com/articles/patchwork.html)
+
+First, I will show you how `cowplot` works.
+I will directly create nested `plot_grid` objects.
+
+```{r}
+library(cowplot)
+
+upper_row <- p1
+middle_row <- plot_grid(p2, p3, p4, ncol = 3, labels = c("B", "C", "D"))
+bottom_row <- p5$gtable
+
+final <- plot_grid(upper_row, middle_row, bottom_row, nrow = 3, labels = c("A", "", "E"))
+
+ggsave(filename = "docs/final_figures/Fig_1.pdf", plot = final, width = 210, height = 290, units = "mm")
+```
 
 
