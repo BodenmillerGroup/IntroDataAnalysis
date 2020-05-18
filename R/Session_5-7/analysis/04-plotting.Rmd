@@ -237,6 +237,46 @@ Of note: the "notch" indicates the 95% confidence interval of the median. The tw
 
 ## Barplot
 
+Next, we'll create a barplot visualizing the different measurements for each species.
+We also want to add the standard error of the mean to the bar chart - for this we need to modify the data.frame a bit:
+
+```{r pre-process}
+cur_dat <- iris %>%
+    pivot_longer(cols = colnames(iris)[1:4]) %>%
+    group_by(Species, name) %>%
+    summarise(mean_val = mean(value),
+              sd_val = sd(value),
+              n_val = length(value),
+              se_val = sd_val/sqrt(n_val),
+              ci_t = qt(0.975, df = n_val - 1) * se_val)
+```
+
+Now, we can plot the barplot:
+
+```{r barplot}
+# Re-order the levels
+cur_dat$Measurement <- factor(cur_dat$name, levels = c("Petal.Width", "Petal.Length", "Sepal.Width", "Sepal.Length"))
+ggplot(cur_dat, aes(x = Species, y = mean_val, fill = Measurement)) + 
+  geom_bar(position = position_dodge(),
+                           stat = "identity") +
+  geom_errorbar(aes(ymin = mean_val - ci_t, ymax = mean_val + ci_t),
+                position = position_dodge(0.9), width = 0.2) +
+  scale_fill_brewer(palette = "Paired",
+                    labels = c("Petal Width", "Petal Length", "Sepal Width", "Sepal Length")) +
+  labs(x = "", y = "Measured value [cm]") + 
+  scale_x_discrete(breaks = c("setosa", "versicolor", "virginica"),
+                   labels = c("Setosa", "Versicolor", "Virginica")) +
+  theme(panel.background = element_blank(),
+        legend.background = element_rect(colour = "black"),
+        legend.position = c(0.05, 0.95), 
+        legend.justification = c("left", "top"),
+        axis.line = element_line(),
+        axis.ticks = element_line(colour = "black"),
+        axis.text.y = element_text(colour = "black", size = 9),
+        axis.text.x = element_text(colour = "black", size = 12, angle = 45, hjust = 1),
+        axis.title = element_text(colour = "black", size = 12))
+```
+
 ## Heatmap
 
 Using `ggplotify`
