@@ -18,6 +18,7 @@ https://zoom.us/j/854293838
 1. 27.03. Programming with Python  
 2. 03.04. The `numpy` package, plotting with `matplotlib`  
 3. 10.04. Processing tabular data with `pandas`, image processing  
+*Note: the image processing part is explained in more detail in the session 4*  
 4. 17.04. Image processing recap, development environments, Q&A session  
 5. 01.05. Object-oriented programming, exception handling & assertions  
 6. 15.05. Package managemtn, project organization, code style guidelines
