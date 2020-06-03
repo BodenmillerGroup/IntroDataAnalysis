@@ -9,8 +9,7 @@ These sessions should not replace university courses and might not contain all r
 
 ## Joint sessions
 
-* March 24, Introduction to Data Analysis Environments  
-  https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing
+* March 24, Introduction to Data Analysis Environments - [slides](https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing)
 * April 14, Version control with Git - [slides](https://docs.google.com/presentation/d/1iG-uxHIRQ2KHwUPBSZcPlFs2xdOGWW2Ze0owIVieZPA/edit?usp=sharing) - [Workshop instructions](Git/README.md)
 
 ## Contributors
