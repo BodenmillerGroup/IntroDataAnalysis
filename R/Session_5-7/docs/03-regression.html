@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="nilseling" />
+
+<meta name="date" content="2020-05-09" />
+
+<title>03-regression</title>
+
+<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Session_5-7</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="01-readData.html">Reading in data</a>
+</li>
+<li>
+  <a href="02-analyseData.html">Data analysis</a>
+</li>
+<li>
+  <a href="03-regression.html">Regression examples</a>
+</li>
+<li>
+  <a href="04-plotting.html">Final figure</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">03-regression</h1>
+<h4 class="author">nilseling</h4>
+<h4 class="date">2020-05-09</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-05-18
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Session_5-7/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200501code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200501)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200501code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200501)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerGroupIntroDataAnalysistree378d254522f9bcba5ed2a5e7e345428845ab25c0targetblank378d254a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/tree/378d254522f9bcba5ed2a5e7e345428845ab25c0" target="_blank">378d254</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerGroupIntroDataAnalysistree378d254522f9bcba5ed2a5e7e345428845ab25c0targetblank378d254a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/tree/378d254522f9bcba5ed2a5e7e345428845ab25c0" target="_blank">378d254</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    R/.DS_Store
+    Ignored:    R/Session_1/Session_1.nb.html
+    Ignored:    R/Session_2/Session_2.nb.html
+    Ignored:    R/Session_3/Session_3.nb.html
+    Ignored:    R/Session_4/.DS_Store
+    Ignored:    R/Session_4/Session_4.nb.html
+    Ignored:    R/Session_5-7/.Rhistory
+    Ignored:    R/Session_5-7/.Rproj.user/
+    Ignored:    R/Session_5-7/data/iris.rds
+
+Unstaged changes:
+    Modified:   R/Session_5-7/analysis/04-plotting.Rmd
+    Modified:   R/Session_5-7/analysis/_site.yml
+    Modified:   R/Session_5-7/analysis/about.Rmd
+    Modified:   R/Session_5-7/analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>R/Session_5-7/analysis/03-regression.Rmd</code>) and HTML (<code>R/Session_5-7/docs/03-regression.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/c734bedffcfdbf0beb5a34150cb153bf3e78a5f8/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">c734bed</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-11
+</td>
+<td>
+Finished session
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/a36d2146ef772879011375bcd8cfefde74da2e55/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">a36d214</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Calculating the significance level
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/bf3ae0ba26f90093a156d4708912ae5cbc9fad07/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">bf3ae0b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Calculating variance measures
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/d318534c94d83db28af446bfb3020c3d3579d5b0/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">d318534</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Added .m file
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/fd7860dbd1f6b897fae45ab5dc6986293be693c5/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">fd7860d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Manual calculation of residuals
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/5423e846c54657d0d9ba5c61835bd70b94eda518/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">5423e84</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Manual calculation of regression coefficients
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/9602600f7ae1f9ed99285bcf37d206c53a535b42/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">9602600</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+<td>
+Intro to lm function and linear regression
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/8039ee57a8a6d315c211ef470564af879ad038ae/R/Session_5-7/analysis/03-regression.Rmd" target="_blank">8039ee5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-09
+</td>
+<td>
+Start of regression session
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In todays session, we will focus on applied statistics in R. As an example (statistics is a huuuuuuuuge field), I will go through different regression models. In particular, these will be simple linear regression, multiple linear regression and analysis of variance. I will also try to explain the underlying mathematical derivations to some extend. This tutorial is heavily based on the instructions <a href="https://daviddalpiaz.github.io/appliedstats/">here</a>.</p>
+</div>
+<div id="linear-regression" class="section level2">
+<h2>Linear regression</h2>
+<p>In the first section, we will discuss linear regression problems using two different car-related datasets.</p>
+<div id="simple-linear-regression" class="section level3">
+<h3>Simple linear regression</h3>
+<p>Here, I will give an introdcution to the most simple regression model available: the simple linear regression. I will also explain the different values returned by the model.</p>
+<p>As an example datasets, we will use the <code>cars</code> data. <code>?cars</code> returns: The data give the speed of cars and the distances taken to stop. Note that the data were recorded in the 1920s.</p>
+<pre class="r"><code>str(cars)</code></pre>
+<pre><code>&#39;data.frame&#39;:   50 obs. of  2 variables:
+ $ speed: num  4 4 7 7 8 9 10 10 10 11 ...
+ $ dist : num  2 10 4 22 16 10 18 26 34 17 ...</code></pre>
+<p>In any regression problem, it is crucial to first understand the relationship between the response variable (or “dependent” variable; or target; on the y-axis) and the explanatory variable (or “independent” variable; or predictor; on the x-axis):</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.0     ✓ purrr   0.3.4
+✓ tibble  3.0.1     ✓ dplyr   0.8.5
+✓ tidyr   1.0.2     ✓ stringr 1.4.0
+✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>cars %&gt;% 
+  ggplot() + geom_point(aes(speed, dist))</code></pre>
+<p><img src="figure/03-regression.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/57052947b3cc285a2824b0f738f947fee563336a/R/Session_5-7/docs/figure/03-regression.Rmd/unnamed-chunk-1-1.png" target="_blank">5705294</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We now want to model the relationship between the response variable <code>dist</code> and the explanatory variable <code>speed</code> in the form of:</p>
+<p><span class="math inline">\(dist = f(speed) + \epsilon\)</span></p>
+<p>Here, <span class="math inline">\(f(speed)\)</span> is a function that depends on speed (or a constant) and <span class="math inline">\(\epsilon\)</span> is a “residual error” that accounts for unexplained variability in the model. By plotting the data, we know, that the data shows a linear dependence - we can therefore use a function that depends linearly on <code>speed</code> to model <code>dist</code>:</p>
+<p><span class="math inline">\(dist = \beta_0 + \beta_1 \cdot speed + \epsilon\)</span></p>
+<p>In correct mathematical notation, the equation would be:</p>
+<p><span class="math inline">\(Y = \beta_0 + \beta_1 X + \epsilon\)</span></p>
+<p>or:</p>
+<p><span class="math inline">\(Y_i = \beta_0 + \beta_1 x_i + \epsilon_i\)</span></p>
+<p>where <span class="math inline">\(\epsilon_i \sim N(0, \sigma^2)\)</span></p>
+<p>The last equation means that the error is a independent and identically distributed (iid) randomw variable with mean 0 and standard deviation <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>To fit a linear regression, we make the following assumptions:</p>
+<ul>
+<li>Linear: the relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(x\)</span> is linear</li>
+<li>Independent: The errors <span class="math inline">\(\epsilon\)</span> are independent</li>
+<li>Normal: the errors <span class="math inline">\(\epsilon\)</span> are normal distributed</li>
+<li>Equal variance: at each value of x, the variance of <span class="math inline">\(Y\)</span> is equal to <span class="math inline">\(\sigma^2\)</span></li>
+</ul>
+<p><strong>Fitting a linear regression in R</strong></p>
+<p>To fit a linear regression in R, we can use the <code>lm</code> function of the <code>stats</code> package.</p>
+<pre class="r"><code>stop_dist_model &lt;- lm(dist ~ speed, data = cars)</code></pre>
+<p>There are now several ways of visualizing the fitting results:</p>
+<pre class="r"><code>stop_dist_model</code></pre>
+<pre><code>
+Call:
+lm(formula = dist ~ speed, data = cars)
+
+Coefficients:
+(Intercept)        speed  
+    -17.579        3.932  </code></pre>
+<pre class="r"><code>summary(stop_dist_model)</code></pre>
+<pre><code>
+Call:
+lm(formula = dist ~ speed, data = cars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-29.069  -9.525  -2.272   9.215  43.201 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -17.5791     6.7584  -2.601   0.0123 *  
+speed         3.9324     0.4155   9.464 1.49e-12 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 15.38 on 48 degrees of freedom
+Multiple R-squared:  0.6511,    Adjusted R-squared:  0.6438 
+F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12</code></pre>
+<p>Before we go into detail what these results mean, I want to introduce the <code>broom</code> package to tidying up these results:</p>
+<pre class="r"><code>library(broom)
+# Tidy output of the regression parameters
+broom::tidy(stop_dist_model)</code></pre>
+<pre><code># A tibble: 2 x 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
+2 speed           3.93     0.416      9.46 1.49e-12</code></pre>
+<pre class="r"><code># Tidy output of the fitting results
+broom::glance(stop_dist_model)</code></pre>
+<pre><code># A tibble: 1 x 11
+  r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.651         0.644  15.4      89.6 1.49e-12     2  -207.  419.  425.
+# … with 2 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;</code></pre>
+<pre class="r"><code># Tidy output of the fitted values
+head(broom::augment(stop_dist_model))</code></pre>
+<pre><code># A tibble: 6 x 9
+   dist speed .fitted .se.fit .resid   .hat .sigma  .cooksd .std.resid
+  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+1     2     4   -1.85    5.21   3.85 0.115    15.5 0.00459       0.266
+2    10     4   -1.85    5.21  11.8  0.115    15.4 0.0435        0.819
+3     4     7    9.95    4.11  -5.95 0.0715   15.5 0.00620      -0.401
+4    22     7    9.95    4.11  12.1  0.0715   15.4 0.0255        0.813
+5    16     8   13.9     3.77   2.12 0.0600   15.5 0.000645      0.142
+6    10     9   17.8     3.44  -7.81 0.0499   15.5 0.00713      -0.521</code></pre>
+<p>Using the <code>broom</code> package, we can now plot the fitted line to the data:</p>
+<pre class="r"><code>augment(stop_dist_model) %&gt;%
+  ggplot() + geom_point(aes(speed, dist)) +
+  geom_line(aes(speed, .fitted), colour = &quot;red&quot;, lwd = 2) + 
+  geom_segment(aes(speed, dist, xend = speed, yend = .fitted)) +
+  geom_label(aes(5, 120, label = paste(&quot;R2:&quot;, round(r.squared, 2))), 
+             data = glance(stop_dist_model)) +
+  geom_label(aes(5, 110, label = paste(&quot;p-value:&quot;, format(p.value, digits = 2))), 
+             data = glance(stop_dist_model)) </code></pre>
+<p><img src="figure/03-regression.Rmd/plot-lm-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-lm-1">
+Past versions of plot-lm-1.png
+</button>
+</p>
+<div id="fig-plot-lm-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerGroup/IntroDataAnalysis/blob/57052947b3cc285a2824b0f738f947fee563336a/R/Session_5-7/docs/figure/03-regression.Rmd/plot-lm-1.png" target="_blank">5705294</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2020-05-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Calculating the results by hand</strong></p>
+<p>To fully understand, what the regression results mean, we will next calculate these values by hand.</p>
+<p>To achieve the best linear model fit, we want to minimize the sum of all squared distances between the regression line and the data points:</p>
+<p><span class="math inline">\(argmin \sum_{i=1}^n(y_i - f(x_i))^2 = argmin \sum_{i=1}^n(y_i - (\beta_0 + \beta_1x_i))^2\)</span></p>
+<p>Note: the error is defined as: <span class="math inline">\(\epsilon_i = y_i - (\beta_0 + \beta_1x_i)\)</span> We basically try to minimize the sum of squared errors.</p>
+<p>The full mathematical derivation can be found <a href="https://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html">here</a></p>
+<p>As a summary, we need to (i) calculate the partial derivatives of <span class="math inline">\((y_i - (\beta_0 + \beta_1x_i))^2\)</span> for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, (ii) set them to 0 and solve the resulting set of linear equations.</p>
+<p>The result is the following:</p>
+<p><span class="math inline">\(\hat{\beta}_1 = \dfrac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n(x_i-\bar{x})^2}=\dfrac{S_{xy}}{S_{xx}}\)</span></p>
+<p>and</p>
+<p><span class="math inline">\(\hat{\beta}_0 = \bar{y} - \hat{\beta_1}\bar{x}\)</span></p>
+<p>As homework, you can try to derive these equations.</p>
+<p>Note: the “hat” on the betas means “estimate” since we do not know the true underlying regression parameters - more samples will change the estimates.</p>
+<p><strong>Calculating the regression coefficients in R</strong></p>
+<p>We define the variables x and y to be in line with the math above:</p>
+<pre class="r"><code>x &lt;- cars$speed
+y &lt;- cars$dist
+
+Sxy &lt;- sum((x - mean(x)) * (y - mean(y)))
+Sxx &lt;- sum((x - mean(x)) ^ 2)
+
+beta_hat_1 &lt;- Sxy / Sxx
+beta_hat_0 &lt;- mean(y) - beta_hat_1 * mean(x)
+
+c(beta_hat_0, beta_hat_1)</code></pre>
+<pre><code>[1] -17.579095   3.932409</code></pre>
+<pre class="r"><code># Compare to fitted model
+stop_dist_model</code></pre>
+<pre><code>
+Call:
+lm(formula = dist ~ speed, data = cars)
+
+Coefficients:
+(Intercept)        speed  
+    -17.579        3.932  </code></pre>
+<p><strong>Calculating the residual error in R</strong></p>
+<p>We can also manually calculate the residual error in R. The residuals can be obtained from the modelled fit using the <code>residuals</code> accessor function:</p>
+<pre class="r"><code>stop_dist_residuals &lt;- residuals(stop_dist_model)
+
+manual_residuals &lt;- y - (beta_hat_0 + beta_hat_1 * x)
+
+# Test for equality
+all.equal(as.numeric(stop_dist_residuals), manual_residuals)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<p><strong>Calculating the residual standard error</strong></p>
+<p>So far, we have calculated <span class="math inline">\(\hat{\beta_1}\)</span> and <span class="math inline">\(\hat{\beta_0}\)</span>. Now, we want to estimate the variance <span class="math inline">\(\sigma^2\)</span> of the model. An estimate for <span class="math inline">\(\sigma^2\)</span> is defined as:</p>
+<p><span class="math inline">\(s_e^2 = \frac{1}{n-2}\sum_{i=1}^n(y_i - \hat{y})^2=\frac{1}{n-2}\sum_{i=1}^n\epsilon_i^2\)</span></p>
+<p>We can now calculate this in R:</p>
+<pre class="r"><code>s2_e &lt;- sum(manual_residuals^2) / (length(manual_residuals) - 2)</code></pre>
+<p>The denominatore here represents the “degrees of freedom” of the model, which in this case is defined as the number of observations minus the number of model parameters.</p>
+<p>The “residual standard error” of the model is the standard deviation:</p>
+<pre class="r"><code>sqrt(s2_e)</code></pre>
+<pre><code>[1] 15.37959</code></pre>
+<pre class="r"><code># Compare to model
+summary(stop_dist_model)$sigma</code></pre>
+<pre><code>[1] 15.37959</code></pre>
+<p>This means the estimates of the mean stopping distance are on average 15.38 meters off.</p>
+<p><strong>Variance decomposition</strong></p>
+<p>We can decompose the variation of the data points (<span class="math inline">\(y_i\)</span>) from the sample mean (<span class="math inline">\(\bar{y}\)</span>) as follows:</p>
+<p><span class="math inline">\(y_i - \bar{y} = (y_i - \hat{y_i}) + (\hat{y_i} - \bar{y})\)</span></p>
+<p>By complicated calculation (see <a href="https://en.wikipedia.org/wiki/Explained_sum_of_squares#Partitioning_in_the_general_ordinary_least_squares_model">here</a>), we can show that:</p>
+<p><span class="math inline">\(\sum_{i=1}^n(y_i - \bar{y})^2 = \sum_{i=1}^n(y_i - \hat{y_i})^2 + \sum_{i=1}^n(\hat{y_i} - \bar{y})^2\)</span></p>
+<p>which we can also simply write as:</p>
+<p>SST = SSE + SSReg</p>
+<p>Here, SST means “sum of squares total”, SSE means “sum of squares error” and SSReg means “sum of squares regression”.</p>
+<p>We can now compute the individual values:</p>
+<pre class="r"><code>y_hat &lt;- beta_hat_0 + beta_hat_1 * x
+
+SST &lt;- sum((y - mean(y)) ^ 2)
+SSE &lt;- sum((y - y_hat) ^ 2)
+SSReg &lt;- sum((y_hat - mean(y)) ^ 2)</code></pre>
+<p>We calculated these measures to derive the “coefficient of determination” also denoted as <span class="math inline">\(R^2\)</span>.</p>
+<p>This measure can be calculated as follows:</p>
+<pre class="r"><code>R2 &lt;- SSReg / SST</code></pre>
+<p>One can understand the coefficent of determination as the proportion of total variance that the model captures.</p>
+<p>The adjusted <span class="math inline">\(R^2\)</span> accounts for the degrees of freedom in the model since the <span class="math inline">\(R^2\)</span> value by default increases when more explanatory variables are added:</p>
+<p><span class="math inline">\(\bar{R}^2 = 1 - (1 - R^2)\dfrac{n - 1}{n - p - 1}\)</span></p>
+<p>where <span class="math inline">\(R^2\)</span> is the coefficient of determination, <span class="math inline">\(n\)</span> is the number of samples and <span class="math inline">\(p\)</span> is the number of explanatory variables excluding the intercept.</p>
+<p>In R:</p>
+<pre class="r"><code>adjR2 &lt;- 1 - (1 - R2) * ((nrow(cars) - 1) / (nrow(cars) - 1 - 1))</code></pre>
+</div>
+<div id="inference-of-simple-linear-regression" class="section level3">
+<h3>Inference of simple linear regression</h3>
+<p><strong>Defining the regression parameters as random variables</strong></p>
+<p>At this point, we will not go through the mathematical derivation of the following equations. Have a look <a href="https://daviddalpiaz.github.io/appliedstats/inference-for-simple-linear-regression.html">here</a> and <a href="https://en.wikipedia.org/wiki/Proofs_involving_ordinary_least_squares#Least_squares_estimator_for_%CE%B2">here</a> for more proofs.</p>
+<p>What we need to know is that <span class="math inline">\(\hat{\beta}_0\)</span> and<span class="math inline">\(\hat{\beta}_1\)</span> can be written as a linear combination of the response variables <span class="math inline">\(Y_i\)</span>. We know that <span class="math inline">\(Y_i\)</span> is normal distributed, therefore <span class="math inline">\(\hat{\beta}_0\)</span> and<span class="math inline">\(\hat{\beta}_1\)</span> are also normal distributed:</p>
+<p><span class="math display">\[
+\hat{\beta}_1 \sim N\left(  \beta_1, \ \frac{\sigma^2}{\sum_{i = 1}^{n}(x_i - \bar{x})^2} \right).
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\hat{\beta}_0 = \sim N\left(  \beta_0, \ \frac{\sigma^2 \sum_{i = 1}^{n}x_i^2}{n \sum_{i = 1}^{n}(x_i - \bar{x})^2} \right).
+\]</span></p>
+<p>We can now standardize these equations (computing the z-score):</p>
+<p><span class="math display">\[
+\frac{\hat{\beta}_0 - \beta_0}{\text{SD}[\hat{\beta}_0]} \sim N(0, 1)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\frac{\hat{\beta}_1 - \beta_1}{\text{SD}[\hat{\beta}_1]} \sim N(0, 1)
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\text{SD}[\hat{\beta}_0] = \sigma\sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\text{SD}[\hat{\beta}_1] = \frac{\sigma}{\sqrt{S_{xx}}}.
+\]</span></p>
+<p><strong>Calculating the standard error</strong></p>
+<p>However, we don’t know the true standard deviation <span class="math inline">\(\sigma\)</span> of the model. Therefore, we will plug in the “residual standard error” as calculated above.</p>
+<p><span class="math display">\[
+\text{SE}[\hat{\beta}_0] = s_e\sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}
+\]</span></p>
+<p><span class="math display">\[
+\text{SE}[\hat{\beta}_1] = \frac{s_e}{\sqrt{S_{xx}}}
+\]</span></p>
+<p>Here, <span class="math inline">\(S_{xx} = \sum_{i = 1}^{n}(x_i - \bar{x})^2\)</span></p>
+<p>We can now calculate these in R:</p>
+<pre class="r"><code>Sxx &lt;- sum((x - mean(x)) ^ 2)
+s_e &lt;- sqrt(s2_e) 
+n &lt;- nrow(cars)
+  
+SE_beta_hat_0 &lt;- s_e * sqrt(1 / n + mean(x) ^ 2 / Sxx)
+SE_beta_hat_1 &lt;- s_e / sqrt(Sxx)
+
+c(SE_beta_hat_0, SE_beta_hat_1)</code></pre>
+<pre><code>[1] 6.7584402 0.4155128</code></pre>
+<pre class="r"><code>summary(stop_dist_model)$coefficients</code></pre>
+<pre><code>              Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) -17.579095  6.7584402 -2.601058 1.231882e-02
+speed         3.932409  0.4155128  9.463990 1.489836e-12</code></pre>
+<p>We can <a href="https://daviddalpiaz.github.io/appliedstats/inference-for-simple-linear-regression.html">proof</a> that</p>
+<p><span class="math display">\[
+\frac{\hat{\beta}_0 - \beta_0}{\text{SE}[\hat{\beta}_0]} \sim t_{n-2}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\frac{\hat{\beta}_1 - \beta_1}{\text{SE}[\hat{\beta}_1]} \sim t_{n-2}
+\]</span></p>
+<p>follows a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - 2\)</span> degrees of freedom. The <span class="math inline">\(t\)</span> distribution is similar to a normal distribution with heavier tails.</p>
+<p><strong>Calculating the t-statistic</strong></p>
+<p>Based on the equation above, we can now calculate the t-statistic based on a given hypothesis test:</p>
+<p><span class="math display">\[
+H_0: \beta_0 = \beta_{00} \quad \text{vs} \quad H_1: \beta_0 \neq \beta_{00}
+\]</span></p>
+<p>The standard hypothesis for a linear regression model is of the form:</p>
+<p><span class="math display">\[
+H_0: \beta_0 = 0 \quad \text{vs} \quad H_1: \beta_0 \neq 0
+\]</span></p>
+<p>We can therefore calculate the t-statistic in the form:</p>
+<p><span class="math display">\[
+t = \frac{\hat{\beta}_1-0}{\text{SE}[\hat{\beta}_1]}
+\]</span></p>
+<p>And in R:</p>
+<pre class="r"><code>t_beta_hat_0 &lt;- (beta_hat_0 - 0) / SE_beta_hat_0
+t_beta_hat_0</code></pre>
+<pre><code>[1] -2.601058</code></pre>
+<pre class="r"><code>t_beta_hat_1 &lt;- (beta_hat_1 - 0) / SE_beta_hat_1
+t_beta_hat_1</code></pre>
+<pre><code>[1] 9.46399</code></pre>
+<p><strong>Calculating the significance level</strong></p>
+<p>Since we know, that this measure follows a t distribution, we can now calculate the “p value”. The p-value here means the probability of rejecting the null hypothesis even though the null hypothesis is true. This also considered to performing a type I error. The p-value can be calculated using the <code>pt</code> function and multiplying the value by 2 to account for a two-sided test.</p>
+<pre class="r"><code>p_beta_hat_0 &lt;- 2 * pt(abs(t_beta_hat_0), df = nrow(cars) - 2, lower.tail = FALSE)
+p_beta_hat_0</code></pre>
+<pre><code>[1] 0.01231882</code></pre>
+<pre class="r"><code>p_beta_hat_1 &lt;- 2 * pt(abs(t_beta_hat_1), df = nrow(cars) - 2, lower.tail = FALSE)
+p_beta_hat_1</code></pre>
+<pre><code>[1] 1.489836e-12</code></pre>
+<p><strong>Confidence intervals</strong></p>
+<p>We can now also compute the confidence interval of the regression parameters:</p>
+<pre class="r"><code>confint(stop_dist_model, level = 0.99)</code></pre>
+<pre><code>                 0.5 %    99.5 %
+(Intercept) -35.706610 0.5484205
+speed         2.817919 5.0468988</code></pre>
+<p>Meaning: we are to 99% confident that the value for the regression parameters lies within the given interval.</p>
+</div>
+</div>
+<div id="further-reading" class="section level2">
+<h2>Further reading</h2>
+<p>Statistical modelling is quite complex and out-of-scope of this introduction course. However, I can highly recommend reading the remaining chapters of the <a href="https://daviddalpiaz.github.io/appliedstats/multiple-linear-regression.html">Applied statistics in R course</a></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.0 (2020-04-24)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Catalina 10.15.4
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] broom_0.5.6     forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5    
+ [5] purrr_0.3.4     readr_1.3.1     tidyr_1.0.2     tibble_3.0.1   
+ [9] ggplot2_3.3.0   tidyverse_1.3.0 workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.0.0 xfun_0.13        haven_2.2.0      lattice_0.20-41 
+ [5] colorspace_1.4-1 vctrs_0.2.4      generics_0.0.2   htmltools_0.4.0 
+ [9] yaml_2.2.1       utf8_1.1.4       rlang_0.4.6      later_1.0.0     
+[13] pillar_1.4.4     withr_2.2.0      glue_1.4.0       DBI_1.1.0       
+[17] dbplyr_1.4.3     modelr_0.1.7     readxl_1.3.1     lifecycle_0.2.0 
+[21] munsell_0.5.0    gtable_0.3.0     cellranger_1.1.0 rvest_0.3.5     
+[25] evaluate_0.14    labeling_0.3     knitr_1.28       httpuv_1.5.2    
+[29] fansi_0.4.1      Rcpp_1.0.4.6     promises_1.1.0   backports_1.1.6 
+[33] scales_1.1.0     jsonlite_1.6.1   farver_2.0.3     fs_1.4.1        
+[37] hms_0.5.3        digest_0.6.25    stringi_1.4.6    grid_4.0.0      
+[41] rprojroot_1.3-2  cli_2.0.2        tools_4.0.0      magrittr_1.5    
+[45] crayon_1.3.4     whisker_0.4      pkgconfig_2.0.3  ellipsis_0.3.0  
+[49] xml2_1.3.2       reprex_0.3.0     lubridate_1.7.8  rstudioapi_0.11 
+[53] assertthat_0.2.1 rmarkdown_2.1    httr_1.4.1       R6_2.4.1        
+[57] nlme_3.1-147     git2r_0.27.1     compiler_4.0.0  </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+---
+title: "Tipps & Tricks for data analysis in R"
+author: "Nils Eling"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Concepts taken from [Advanced R](https://adv-r.hadley.nz/index.html).
+
+## Assignment operator and pipes
+
+## Efficient coding
+
+### Reading in data
+
+`read.csv` vs `read_cvs` vs `data.table` vs `vroom`
+
+### Loops and apply
+
+### Parallelisation
+
+## Object-oriented coding
+
+Mainly relevant for development and not analysis but good to understand
+
+
+
+S3 vs S4 vs R6
+
+Very opinionated and preference due to developing for Bioconductor --> use S4
+
+## Common pitfalls
+
+Vector recycling
+
+the `drop` argument
+
+## Recommendations on coding style
+
+Avoid copying code and modularize (the `source` command)
+
+
+
+
+
+```{r, sessionInfo}
+sessionInfo()
+```
