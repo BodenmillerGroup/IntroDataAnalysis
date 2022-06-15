@@ -13,13 +13,105 @@ Concepts taken from [Advanced R](https://adv-r.hadley.nz/index.html).
 
 ## Assignment operator and pipes
 
+```{r, error=TRUE}
+y = 1:10
+y
+
+z <- 1:10
+z
+
+mean(x = 1:10)
+x
+
+mean(x <- 1:10)
+x
+
+system.time(x = lapply(1:10, function(x) {Sys.sleep(1); return(x)}))
+
+system.time(x <- lapply(1:10, function(x) {Sys.sleep(1); return(x)}))
+```
+
+```{r}
+covid <- read.csv("../../Data/covid19.csv")
+
+str(covid)
+
+covid[covid$Country.Region == "Switzerland" & covid$Confirmed == max(covid[covid$Country.Region == "Switzerland", "Confirmed"]),"Date"]
+
+covid |> 
+    subset(Country.Region == "Switzerland") |> 
+    subset(Confirmed == max(Confirmed)) |> 
+    getElement("Date")
+```
+
+Same with tidyverse.
+
+```{r}
+library(tidyverse)
+
+covid %>%
+    filter(Country.Region == "Switzerland") %>%
+    filter(Confirmed == max(Confirmed)) %>%
+    select("Date")
+```
+
+Pipe into variable 
+
+```{r}
+covid %>%
+    filter(Country.Region == "Switzerland") %>%
+    filter(Confirmed == max(Confirmed)) %>%
+    select("Date") -> max_conf_date
+max_conf_date
+```
+
+```{r, fig.width=12}
+covid %>%
+    filter(Country.Region == "Switzerland") %>%
+    ggplot() + geom_line(aes(Date, Confirmed, color = Country.Region, group = 1)) +
+    theme_classic(base_size = 15) +
+    theme(axis.text.x = element_text(angle = 90))
+```
+
 ## Efficient coding
 
 ### Reading in data
 
+Write large data frame
+
+```{r, eval=FALSE}
+matrix(rnorm(n = 10000000), ncol = 10) %>%
+    as.data.frame() %>%
+    write_csv(file = "../../Data/large_test_data.csv")
+```
+
 `read.csv` vs `read_cvs` vs `data.table` vs `vroom`
 
+```{r, message=FALSE}
+library(bench)
+library(data.table)
+library(vroom)
+library(DT)
+
+bench::mark(
+    cur_data <- read.csv("../../Data/large_test_data.csv"),
+    cur_data <- readr::read_csv("../../Data/large_test_data.csv"),
+    cur_data <- data.table::fread("../../Data/large_test_data.csv"),
+    cur_data <- vroom::vroom("../../Data/large_test_data.csv"),
+    check = FALSE
+) %>% DT::datatable()
+
+```
+
 ### Loops and apply
+
+```{r}
+x <- list(entr1 = 1:10, entr2 = 20:30)
+
+lapply(x, `[[`, 3)
+
+lapply(x, `[[<-`, 3, 120)
+```
 
 ### Parallelisation
 
