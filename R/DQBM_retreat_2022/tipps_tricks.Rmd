@@ -2,22 +2,55 @@
 title: "Tipps & Tricks for data analysis in R"
 author: "Nils Eling"
 date: "`r Sys.Date()`"
-output: html_document
+output: html_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Concepts taken from [Advanced R](https://adv-r.hadley.nz/index.html).
+This script serves a teaching material for the workshop "Tipps & Tricks for 
+data analysis in R" presented at the DQBM retreat 2022.
 
-## Assignment operator and pipes
+It slightly builds upon the [Introduction to Data Analysis](https://uzh.sharepoint.com/:f:/r/sites/DQBMIntranet524/Shared%20Documents/General/All%20things%20computational/2020%20Introduction%20to%20Data%20Analysis/R?csf=1&web=1&e=hjXCdd) sessions
+that were held in March 2020.
+
+Some of the concepts are taken from [Advanced R](https://adv-r.hadley.nz/index.html),
+an excellent book to dive deeper into how R works.
+
+The session will address very different aspects of data analysis and programming
+using the statistical programming language R. To follow the session, please install [R](https://stat.ethz.ch/CRAN/) and [RStudio](https://www.rstudio.com/products/rstudio/download/#download) and install the following packages in R:
+
+```{r, eval=FALSE}
+install.packages("BiocManager")
+BiocManager::install("R6", "BiocParallel", "DT", "vroom", "data.table", "bench", "forcats", "stringr", "dplyr", "purrr", "readr", "tidyr", "tibble", "ggplot2", "tidyverse")
+```
+
+## Coding style and flow
+
+In the first section, we will discuss very basic coding practices in R mainly
+focusing on the assignment operator, pipes and function calls. For a full
+overview on coding stlye recommendations please refer to [the tidyverse style guide](https://style.tidyverse.org/index.html).
+
+### Assignment operator
+
+The assignment operator `<-` and `->` in R is the preferred way of assigning
+variables. It alows left sided and right sided assignment while `=` is always
+interpreted as `<-` outside function calls. The `=` is reserved for parameter
+setting within function calls.
+
+Calling `<-` within a function call allows assignment of a previously undefined
+variable.
 
 ```{r, error=TRUE}
 y = 1:10
 y
+1:10 = y
 
 z <- 1:10
+z
+1:10 -> z
 z
 
 mean(x = 1:10)
@@ -26,25 +59,41 @@ x
 mean(x <- 1:10)
 x
 
+# Incorrect assignment within function call
 system.time(x = lapply(1:10, function(x) {Sys.sleep(1); return(x)}))
 
+# Assignment to x within function call
 system.time(x <- lapply(1:10, function(x) {Sys.sleep(1); return(x)}))
 ```
+
+### Pipes
+
+Using pipes in R improves readability of you code. In the next code chunk we 
+want to find the date at which the maximum of accumulated Covid-19
+cases were detected in Switzerland.
+
+For this, base R by now provides the pipe operator `|>`.
 
 ```{r}
 covid <- read.csv("../../Data/covid19.csv")
 
 str(covid)
 
+# Bad
 covid[covid$Country.Region == "Switzerland" & covid$Confirmed == max(covid[covid$Country.Region == "Switzerland", "Confirmed"]),"Date"]
 
+# Good
 covid |> 
     subset(Country.Region == "Switzerland") |> 
     subset(Confirmed == max(Confirmed)) |> 
     getElement("Date")
 ```
 
-Same with tidyverse.
+The [tidyverse](https://www.tidyverse.org/) package provides all base packages
+for [tidy
+data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+handling in R. 
+The pipe operator `%>%` is provided by the `magrittr` package.
 
 ```{r}
 library(tidyverse)
@@ -55,15 +104,27 @@ covid %>%
     select("Date")
 ```
 
-Pipe into variable 
+Even though this is not recommended, piping naturally fits to right
+sided assignments:
 
 ```{r}
+# Bad but fun
 covid %>%
     filter(Country.Region == "Switzerland") %>%
     filter(Confirmed == max(Confirmed)) %>%
     select("Date") -> max_conf_date
 max_conf_date
+
+# Good
+max_conf_date <- covid %>%
+    filter(Country.Region == "Switzerland") %>%
+    filter(Confirmed == max(Confirmed)) %>%
+    select("Date")
+max_conf_date
 ```
+
+One of the key features of piping is the direct use with `ggplot2` for
+plotting.
 
 ```{r, fig.width=12}
 covid %>%
