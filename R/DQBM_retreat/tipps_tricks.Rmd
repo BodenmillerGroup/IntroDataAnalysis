@@ -100,10 +100,58 @@ bench::mark(
     cur_data <- vroom::vroom("../../Data/large_test_data.csv"),
     check = FALSE
 ) %>% DT::datatable()
-
 ```
 
 ### Loops and apply
+
+Bad
+
+```{r}
+cur_data <- as.matrix(cur_data[1:100000,])
+
+out <- vector()
+
+for (i in 1:nrow(cur_data)) {
+    cur_mean <- mean(cur_data[i,])
+    out <- c(out, cur_mean)
+}
+
+head(out, 100)
+```
+
+Better
+
+```{r}
+out <- apply(cur_data, MARGIN = 1, FUN = mean)
+head(out, 100)
+```
+
+Best 
+
+```{r}
+out <- rowMeans(cur_data)
+head(out, 100)
+```
+
+Different apply functions:
+
+* apply
+* lapply
+* sapply
+* vapply
+* tapply
+* mapply
+
+```{r}
+cur_list <- lapply(1:10, function(x){
+    rnorm(n = sample(1:10, 1))
+})
+
+out <- lapply(cur_list, mean)
+out
+
+do.call(c, out)
+```
 
 ```{r}
 x <- list(entr1 = 1:10, entr2 = 20:30)
@@ -113,31 +161,256 @@ lapply(x, `[[`, 3)
 lapply(x, `[[<-`, 3, 120)
 ```
 
+```{r}
+sapply(cur_list, mean)
+```
+
+```{r, error=TRUE}
+vapply(cur_list, mean, FUN.VALUE = 0)
+
+vapply(cur_list, mean, FUN.VALUE = "test")
+```
+
+```{r}
+tapply(covid$Confirmed, covid$Country.Region, max)
+
+aggregate(covid$Confirmed, by = list(country = covid$Country.Region), max)
+
+covid %>%
+    group_by(Country.Region) %>%
+    summarize(max_confirmed = max(Confirmed))
+```
+
+```{r}
+cur_list_2 <- as.list(1:10)
+mapply(function(x, y){
+    return(mean(x) * y)
+},
+cur_list, cur_list_2)
+
+mapply(`*`, cur_list_2, cur_list_2)
+```
+
 ### Parallelisation
+
+BiocParallel
+
+lot's of packages: [parallel], [foreach], [future]
+
+I recommend [BiocParallel]
+
+```{r}
+library(BiocParallel)
+
+bench::mark(
+    cur_out <- lapply(1:10, function(x){Sys.sleep(5); return(x)}),
+    cur_out <- bplapply(1:10, function(x){Sys.sleep(5); return(x)}, BPPARAM = bpparam()),
+    memory = FALSE
+)
+```
 
 ## Object-oriented coding
 
 Mainly relevant for development and not analysis but good to understand
 
+```{r}
+attr(1:10, "class")
+typeof(1:10)
+class(1:10)
+is(1:10, "integer")
 
+attr(matrix(1:10), "class")
+typeof(matrix(1:10))
+class(matrix(1:10))
+is(matrix(1:10), "integer")
 
-S3 vs S4 vs R6
+# Class inheritance
+is(matrix(1:10), "matrix")
+is(matrix(1:10), "array")
+```
 
-Very opinionated and preference due to developing for Bioconductor --> use S4
+```{r}
+cur_pca <- prcomp(iris[,-5])
+
+class(cur_pca)
+
+print(cur_pca)
+plot(cur_pca)
+
+# Access slots via "$"
+head(cur_pca$sdev)
+```
+
+```{r}
+f <- factor(c("a", "b", "c"))
+df <- data.frame(a = 1:10, b = letters[1:10])
+
+# generic functions - always use these
+print(f)
+print(df)
+
+# methods - never use these
+print.factor(f)
+print.factor(df)
+
+print.data.frame(df)
+print.data.frame(f)
+```
+
+S3 class
+
+```{r, error=TRUE}
+# Create, then set class
+x <- 1
+class(x) <- "my_class"
+
+class(x)
+inherits(x, "my_class")
+inherits(x, "your_class")
+
+# build a generic function
+```
+
+S3 generic
+
+```{r}
+my_generic <- function(x) UseMethod("my_generic", x)
+```
+
+S3 method
+
+```{r, error=TRUE}
+my_generic.my_class <- function(x) x + 10
+
+my_generic(x)
+my_generic(20)
+```
+
+S4 class
+
+```{r}
+setClass("Person", 
+  slots = c(
+    name = "character", 
+    age = "numeric"
+  )
+)
+
+john <- new("Person", name = "John Smith", age = as.numeric(NA))
+
+is(john)
+
+# Access slots via "@"
+john@name
+
+slot(john, "age")
+```
+
+S4 generic
+
+```{r}
+setGeneric("age", function(x) standardGeneric("age"))
+setGeneric("age<-", function(x, value) standardGeneric("age<-"))
+```
+
+S4 method
+
+```{r}
+setMethod("age", "Person", function(x) x@age)
+setMethod("age<-", "Person", function(x, value) {
+  x@age <- value
+  x
+})
+
+age(john) <- 50
+age(john)
+```
+
+R6 
+
+```{r, error=TRUE}
+library(R6)
+
+Person <- R6Class("Person", list(
+  name = NULL,
+  age = NA,
+  initialize = function(name, age = NA) {
+    stopifnot(is.character(name), length(name) == 1)
+    stopifnot(is.numeric(age), length(age) == 1)
+    
+    self$name <- name
+    self$age <- age
+  },
+  print = function(...) {
+    cat("Person: \n")
+    cat("  Name: ", self$name, "\n", sep = "")
+    cat("  Age:  ", self$age, "\n", sep = "")
+    invisible(self)
+  },
+  add_years = function(x) {
+    self$age <- self$age + x 
+    invisible(self)
+  }
+))
+
+nils <- Person$new("Nils", age = "thirty-three")
+nils <- Person$new("Nils", age = 33)
+
+nils$print()
+nils$add_years(10)
+nils$print()
+nils$age
+
+nils$
+    add_years(10)$
+    age
+```
 
 ## Common pitfalls
 
 Vector recycling
 
+```{r}
+dim(iris)
+
+cur_vector <- c(TRUE, FALSE, TRUE)
+dim(iris[cur_vector,])
+
+cur_vector <- iris$Species == "virginica"
+dim(iris[cur_vector,])
+```
+
 the `drop` argument
 
-## Recommendations on coding style
+```{r}
+iris$subspecies <- factor(rep(letters[1:5], each = 30))
 
-Avoid copying code and modularize (the `source` command)
+iris %>% count(Species, subspecies) 
+
+iris %>% count(Species, subspecies, .drop = FALSE)
+```
+
+use `return`
+
+```{r}
+out <- lapply(1:10, function(x){
+    cur_out <- data.frame(index = rep(x, 10))
+    cur_out$table <- cur_out$index * 1:10
+})
+out
+
+out <- lapply(1:10, function(x){
+    cur_out <- data.frame(index = rep(x, 10))
+    cur_out$table <- cur_out$index * 1:10
+    return(cur_out)
+})
+out
+```
 
 
+## Session info
 
-
+Here are the packages used in this workshop.
 
 ```{r, sessionInfo}
 sessionInfo()
