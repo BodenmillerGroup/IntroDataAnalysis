@@ -1,0 +1,10 @@
+## Tipps and Tricks for data analysis in R
+
+This folder contains scripts presented at the DQBM retreat 2022.
+
+To follow the session, please install [R](https://stat.ethz.ch/CRAN/) and [RStudio](https://www.rstudio.com/products/rstudio/download/#download) and install the following packages in R:
+
+```
+install.packages("BiocManager")
+BiocManager::install("R6", "BiocParallel", "DT", "vroom", "data.table", "bench", "forcats", "stringr", "dplyr", "purrr", "readr", "tidyr", "tibble", "ggplot2", "tidyverse")
+```
