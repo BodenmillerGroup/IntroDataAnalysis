@@ -2,8 +2,11 @@
 title: "Tipps & Tricks for data analysis in R"
 author: "Nils Eling"
 date: "`r Sys.Date()`"
-output: html_document:
-    toc: true
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        theme: sandstone
 ---
 
 ```{r setup, include=FALSE}
@@ -95,7 +98,7 @@ data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
 handling in R. 
 The pipe operator `%>%` is provided by the `magrittr` package.
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse)
 
 covid %>%
@@ -136,9 +139,17 @@ covid %>%
 
 ## Efficient coding
 
+The next section focuses on how to perform computations efficiently in (base) R.
+One of the best packages for efficient computations in [data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)
+but we won't have enough time to go through it.
+
 ### Reading in data
 
-Write large data frame
+Reading in large datasets in R can be a pain and the base R fiunctions are
+not optimized for this.
+
+To test a number of file reader functions, we will first generate a "large" dataset
+on the fly and write it to disk:
 
 ```{r, eval=FALSE}
 matrix(rnorm(n = 10000000), ncol = 10) %>%
@@ -146,9 +157,20 @@ matrix(rnorm(n = 10000000), ncol = 10) %>%
     write_csv(file = "../../Data/large_test_data.csv")
 ```
 
-`read.csv` vs `read_cvs` vs `data.table` vs `vroom`
+The resulting `.csv` file contains 1 million rows and 10 columns and has 
+a size of 200mb on disk.
 
-```{r, message=FALSE}
+In the next code chunk we will test the following file reader functions:
+
+* `read.csv`: base R function for reading in `.csv` files
+* `readr::read_csv`: standard tidy R function
+* `data.table::fread`: main reader function of the `data.table` package
+* `vroom::vroom`: newer library playing along with tidy R
+
+We will now use the [bench](https://bench.r-lib.org/) library to perform some
+benchmarks on which reader function is the best.
+
+```{r, message=FALSE, warning=FALSE}
 library(bench)
 library(data.table)
 library(vroom)
@@ -160,18 +182,33 @@ bench::mark(
     cur_data <- data.table::fread("../../Data/large_test_data.csv"),
     cur_data <- vroom::vroom("../../Data/large_test_data.csv"),
     check = FALSE
-) %>% DT::datatable()
+) %>% select(c("min", "median", "mem_alloc", "total_time")) %>%
+    DT::datatable()
 ```
+
+We can see that the base R reader function has by far the worst performance.
+The `readr::read_csv` function has already a decent performance and should be
+used whenever possible - especially when you plan on using the `tidyverse` 
+packages, which you should ;). 
+
+The `vroom::vroom` function in this case does not seem to be much faster than 
+the other ones bu memory allocation is drastically reduced. You should be
+using this one when reading in gigabytes and gigabytes of data.
 
 ### Loops and apply
 
-Bad
+The R programming language performs best when using [vectorized operations](https://bookdown.org/rdpeng/rprogdatascience/vectorized-operations.html).
+Only in certain cases it is needed to use a `for` loop to iterated over objects.
+
+The following code chunk highlights the worst possible way of calculating
+the average value per row of a matrix:
 
 ```{r}
 cur_data <- as.matrix(cur_data[1:100000,])
 
 out <- vector()
 
+# Bad
 for (i in 1:nrow(cur_data)) {
     cur_mean <- mean(cur_data[i,])
     out <- c(out, cur_mean)
@@ -180,67 +217,135 @@ for (i in 1:nrow(cur_data)) {
 head(out, 100)
 ```
 
-Better
+Here, we used a `for` loop to iterate through all rows. In addition, 
+we overwrite the full vector `out` in each iteration.
+
+If you want/need to use a `for` loop it is better to first create the output
+object and only replace individual entries:
 
 ```{r}
+out <- vector(mode = "numeric", length = nrow(cur_data))
+
+# Slightly better if needed
+for (i in 1:nrow(cur_data)) {
+    cur_mean <- mean(cur_data[i,])
+    out[i] <- cur_mean
+}
+```
+
+In any case, it is recommended to use functions of the `apply` family to perform
+iterated operations. To oerate on arrays and matrices, base R provides the 
+`apply` function:
+
+```{r}
+# Much better
 out <- apply(cur_data, MARGIN = 1, FUN = mean)
 head(out, 100)
 ```
 
-Best 
+Here, `MARGIN` can be `1` to iterate over rows, `2` to iterate over columns
+or even `3` or higher to iterate over higher dimensions when working with
+`arrays`. 
+
+For most easy operations, base R provides easy vecorized functions, such as
+`rowMeans`:
 
 ```{r}
+# Best
 out <- rowMeans(cur_data)
 head(out, 100)
 ```
 
-Different apply functions:
+In the next sections we will go through the different functions of the `apply`
+family:
 
-* apply
-* lapply
-* sapply
-* vapply
-* tapply
-* mapply
+* `apply`: as seen above used on matrix-like objects
+* `lapply`: used on lists/vectors, returns a list
+* `sapply`: used on lists/vectors, returns a vector
+* `vapply`: used on lists/vectors, returns a vector with checking
+* `tapply`: applies a function per grouping level
+* `mapply`: combines multiple lists
+
+In the following example we will generate a list which contains 10 entries,
+each of which is a numeric vector of length 10 which can contain NAs.
+
+We will then compute the mean per entry while ignoring NAs. Finally, we will
+convert the list to a vector in different ways.
 
 ```{r}
 cur_list <- lapply(1:10, function(x){
-    rnorm(n = sample(1:10, 1))
+    c(rnorm(n = 10), rep(NA, 10))[sample(1:20, 10)]
 })
 
-out <- lapply(cur_list, mean)
+out <- lapply(cur_list, mean, na.rm = TRUE)
 out
 
 do.call(c, out)
+as.numeric(out)
+as(out, "numeric")
 ```
 
-```{r}
+In the next example, we can see that most operators in R are also defined as
+functions. Here, we can first access the 3rd element of each entry of a list and
+even perform assignments to individual entries. Here we see again that it's 
+important to understand what the assignment operator is. All replacement
+functions in R are defined using the assignment operator. 
+
+```{r, error=TRUE}
 x <- list(entr1 = 1:10, entr2 = 20:30)
 
 lapply(x, `[[`, 3)
 
 lapply(x, `[[<-`, 3, 120)
+
+lapply(x, `[[=`, 3, 120)
 ```
+
+The next function we will look at is `sapply` which operates similarly as
+`lapply` but returnes a "simplified" version of the output (e.g. directly a vector).
 
 ```{r}
 sapply(cur_list, mean)
 ```
 
+However, it is not always trivial to simplify the output since it's not always
+clear what the output is. When developing computational methods it's always
+safer to use `vapply` which checks the type and length out the output.
+
 ```{r, error=TRUE}
+# A single numeric should be returned
 vapply(cur_list, mean, FUN.VALUE = 0)
 
+# Two objects are returned
+vapply(cur_list, 
+       function(x){return(c("one", "two"))}, 
+       FUN.VALUE = c("test1", "test2"))
+
+# Doesn't work
 vapply(cur_list, mean, FUN.VALUE = "test")
 ```
 
-```{r}
-tapply(covid$Confirmed, covid$Country.Region, max)
+The `tapply` function performs operations on groups of an input.
+In the following case, we will calculate the maximum of confirmed covid cases
+per country. 
 
+Similar operations can be done with the base R `aggregate` function and
+with tidy R.
+
+```{r}
+# tapply
+head(tapply(covid$Confirmed, covid$Country.Region, max), 10)
+
+# aggregate
 aggregate(covid$Confirmed, by = list(country = covid$Country.Region), max)
 
+# tidy R
 covid %>%
     group_by(Country.Region) %>%
     summarize(max_confirmed = max(Confirmed))
 ```
+Finally, the `mapply` combines a number of lists and performs operations on each 
+paired enrty:
 
 ```{r}
 cur_list_2 <- as.list(1:10)
@@ -254,11 +359,19 @@ mapply(`*`, cur_list_2, cur_list_2)
 
 ### Parallelisation
 
-BiocParallel
+One strength of R is to be able to perform operations in a parallelized fashion.
+For this a number of packages have been developed including [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf),
+[foreach](https://cran.r-project.org/web/packages/foreach/vignettes/foreach.html) and [future](https://future.futureverse.org/). 
 
-lot's of packages: [parallel], [foreach], [future]
+Personally, I prefer the
+[BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html)
+package as it provides a user-friendly way of handling parallelised operations
+by simply extending the `lapply` function.
 
-I recommend [BiocParallel]
+In the next code chunk, we will test how the `bplapply` function works. 
+The only additional parameter is `BPPARAM` which in the following case is set
+to `bpparam()`. The `bbparam()` function registers a parallelisation
+backend which is most suited to your operating system.
 
 ```{r}
 library(BiocParallel)
@@ -290,6 +403,8 @@ is(matrix(1:10), "matrix")
 is(matrix(1:10), "array")
 ```
 
+### S3 class
+
 ```{r}
 cur_pca <- prcomp(iris[,-5])
 
@@ -318,8 +433,6 @@ print.data.frame(df)
 print.data.frame(f)
 ```
 
-S3 class
-
 ```{r, error=TRUE}
 # Create, then set class
 x <- 1
@@ -347,7 +460,7 @@ my_generic(x)
 my_generic(20)
 ```
 
-S4 class
+### S3 class
 
 ```{r}
 setClass("Person", 
@@ -387,7 +500,7 @@ age(john) <- 50
 age(john)
 ```
 
-R6 
+### R6 class
 
 ```{r, error=TRUE}
 library(R6)
@@ -467,7 +580,6 @@ out <- lapply(1:10, function(x){
 })
 out
 ```
-
 
 ## Session info
 
