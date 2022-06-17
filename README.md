@@ -12,6 +12,15 @@ These sessions should not replace university courses and might not contain all r
 * March 24, Introduction to Data Analysis Environments - [slides](https://docs.google.com/presentation/d/17gDZuQkWH9Jkwg5skAIT3o__fQaGOYgAJ5Ri46Api1M/edit?usp=sharing)
 * April 14, Version control with Git - [slides](https://docs.google.com/presentation/d/1iG-uxHIRQ2KHwUPBSZcPlFs2xdOGWW2Ze0owIVieZPA/edit?usp=sharing) - [Workshop instructions](Git/README.md)
 
+## Extension sessions
+
+* June 21 2022, DQBM retreat, Tipps & Tricks for data analysis in R
+
+## Hosting instructions via Github Pages
+
+Always the HTML file of the newest session can be placed as `index.html` to the root of the repository.
+It will be rendered at [bodenmillergroup.github.io/IntroDataAnalysis](bodenmillergroup.github.io/IntroDataAnalysis).
+
 ## Contributors
 
 * Nils Eling (R sessions)
