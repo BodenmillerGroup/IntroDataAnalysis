@@ -30,6 +30,15 @@ install.packages("BiocManager")
 BiocManager::install("R6", "BiocParallel", "DT", "vroom", "data.table", "bench", "forcats", "stringr", "dplyr", "purrr", "readr", "tidyr", "tibble", "ggplot2", "tidyverse")
 ```
 
+To follow the session live, please clone the repository locally
+
+```
+git clone https://github.com/BodenmillerGroup/IntroDataAnalysis.git
+cd IntroDataAnalysis/R/DQBM_retreat_2022
+```
+
+and open the file `tipps_tricks.Rmd`.
+
 ## Coding style and flow
 
 In the first section, we will discuss very basic coding practices in R mainly
@@ -305,7 +314,7 @@ The next function we will look at is `sapply` which operates similarly as
 `lapply` but returnes a "simplified" version of the output (e.g. directly a vector).
 
 ```{r}
-sapply(cur_list, mean)
+sapply(cur_list, mean, na.rm = TRUE)
 ```
 
 However, it is not always trivial to simplify the output since it's not always
@@ -314,7 +323,7 @@ safer to use `vapply` which checks the type and length out the output.
 
 ```{r, error=TRUE}
 # A single numeric should be returned
-vapply(cur_list, mean, FUN.VALUE = 0)
+vapply(cur_list, mean, FUN.VALUE = 0, na.rm = TRUE)
 
 # Two objects are returned
 vapply(cur_list, 
@@ -351,7 +360,7 @@ paired entry:
 ```{r}
 cur_list_2 <- as.list(1:10)
 mapply(function(x, y){
-    return(mean(x) * y)
+    return(mean(x, na.rm = TRUE) * y)
 },
 cur_list, cur_list_2)
 
@@ -381,7 +390,8 @@ bench::mark(
     cur_out <- lapply(1:10, function(x){Sys.sleep(5); return(x)}),
     cur_out <- bplapply(1:10, function(x){Sys.sleep(5); return(x)}, BPPARAM = bpparam()),
     memory = FALSE
-)
+) %>% select(c("min", "median", "mem_alloc", "total_time")) %>%
+    DT::datatable()
 ```
 
 ## Object-oriented programming
