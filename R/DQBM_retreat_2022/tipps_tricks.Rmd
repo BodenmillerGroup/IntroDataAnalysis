@@ -337,15 +337,16 @@ with tidy R.
 head(tapply(covid$Confirmed, covid$Country.Region, max), 10)
 
 # aggregate
-aggregate(covid$Confirmed, by = list(country = covid$Country.Region), max)
+head(aggregate(covid$Confirmed, by = list(country = covid$Country.Region), max), 10)
 
 # tidy R
 covid %>%
     group_by(Country.Region) %>%
-    summarize(max_confirmed = max(Confirmed))
+    summarize(max_confirmed = max(Confirmed)) %>%
+    head(10)
 ```
 Finally, the `mapply` combines a number of lists and performs operations on each 
-paired enrty:
+paired entry:
 
 ```{r}
 cur_list_2 <- as.list(1:10)
@@ -383,13 +384,29 @@ bench::mark(
 )
 ```
 
-## Object-oriented coding
+## Object-oriented programming
 
-Mainly relevant for development and not analysis but good to understand
+In the next section we will learn how obbject oriented programming (OOP) can
+be done in R. Even without knowing what that means you have used OOP whenever
+you code in R.
+
+OOP in R consists of the following three parts:
+
+* **object**: they store data in a pre-defined form
+* **generic function**: functions that perform a certain task
+* **methods**: apply a generic function on a certain object
+
+Understanding OOP in R is mainly relevant for methods development but
+also useful to understand where differences in the way you analyse data come from.
+
+We will first start with observing the difference between a `base type` and a 
+`class attribute`. Every object in R has a base type while only OOP onjects
+have a `class attribute`.
 
 ```{r}
 attr(1:10, "class")
 typeof(1:10)
+# mIsleading
 class(1:10)
 is(1:10, "integer")
 
@@ -403,35 +420,70 @@ is(matrix(1:10), "matrix")
 is(matrix(1:10), "array")
 ```
 
+We will now directly move to defining OOP objects, generic functions and
+methods in different ways. Please refer to [Object Oriented Programming](https://adv-r.hadley.nz/oo.html)
+for full information.
+
+Most objects that you work with when analyzing data in base R are of the "S3" class.
+This is a loosely defined construct for which generic functions and methods exist
+and allow the user and developer lots of flexibility.
+
+The [Bioconductor]() project mainly works with "S4" classes which are a lot
+more formally defined and allow for easier interoperability.
+
+The "R6" class provides a framework which comes closest to real OOP as known 
+from e.g. python.
+
+In the following sections, we will go through different examples and how to 
+construct objects, generic functions and methods.
+
 ### S3 class
+
+S3 class objects are most often used in base R functions. For example,
+the `prcomp` function to compute a PCA returns an object of class `prcomp`.
+Each slot of a S3 class object can be accessed via `$`.
 
 ```{r}
 cur_pca <- prcomp(iris[,-5])
 
 class(cur_pca)
 
-print(cur_pca)
-plot(cur_pca)
-
 # Access slots via "$"
 head(cur_pca$sdev)
 ```
 
+Also base objects such as a `factor` or a `data.frame` are S3 objects which can
+be tested. In base R there are generic functions defined which can be applied to
+an S3 object. Here an example of such a generic function is `print`. Internally,
+`print` will find the matching method to be called on the provided object.
+
 ```{r}
 f <- factor(c("a", "b", "c"))
 df <- data.frame(a = 1:10, b = letters[1:10])
+is.object(f)
+is.object(df)
 
 # generic functions - always use these
+isS3stdGeneric("print")
 print(f)
 print(df)
 
 # methods - never use these
+isS3method("print.factor")
 print.factor(f)
 print.factor(df)
 
 print.data.frame(df)
 print.data.frame(f)
 ```
+
+There is never the need to directly call a method on an object but rather use
+the generic function.
+
+In the next few chunks we will learn how to build an object of a certain class,
+how to construct a generic function and how to construct a method.
+
+We will first construct an S3 class object.
 
 ```{r, error=TRUE}
 # Create, then set class
@@ -441,17 +493,15 @@ class(x) <- "my_class"
 class(x)
 inherits(x, "my_class")
 inherits(x, "your_class")
-
-# build a generic function
 ```
 
-S3 generic
+Next, we can define a generic function:
 
 ```{r}
 my_generic <- function(x) UseMethod("my_generic", x)
 ```
 
-S3 method
+Finally, we will link a method to the object class and the generic function.
 
 ```{r, error=TRUE}
 my_generic.my_class <- function(x) x + 10
@@ -460,7 +510,15 @@ my_generic(x)
 my_generic(20)
 ```
 
-### S3 class
+### S4 class
+
+The S4 class system is more formally defined, One would first need to 
+define the structure of the class. In the following example, we will first define
+a class "Person" which contains slots to store the name and the character of the
+person.
+
+We can then use the `new` function to create a new object of class "Person".
+Slots in the object can be accessed via `@` or the `slot` function.
 
 ```{r}
 setClass("Person", 
@@ -473,6 +531,7 @@ setClass("Person",
 john <- new("Person", name = "John Smith", age = as.numeric(NA))
 
 is(john)
+isS4(john)
 
 # Access slots via "@"
 john@name
@@ -480,14 +539,16 @@ john@name
 slot(john, "age")
 ```
 
-S4 generic
+Next, we can define a new generic function calle `age` for getting the age 
+of a person and `age<-` for setting the age of a person.
 
 ```{r}
 setGeneric("age", function(x) standardGeneric("age"))
 setGeneric("age<-", function(x, value) standardGeneric("age<-"))
 ```
 
-S4 method
+Finally, we can construct the methods linked to the `age` and `age<-` generic
+functions and the `Person` object:
 
 ```{r}
 setMethod("age", "Person", function(x) x@age)
@@ -502,12 +563,18 @@ age(john)
 
 ### R6 class
 
+Just for demonstration purposes, we will also discuss the R6 class.
+Here, within the class definition one can directly specify class
+methods without the need to constructing generic functions.
+
 ```{r, error=TRUE}
 library(R6)
 
+# Class definition
 Person <- R6Class("Person", list(
   name = NULL,
   age = NA,
+  # Validity checks on the class construction
   initialize = function(name, age = NA) {
     stopifnot(is.character(name), length(name) == 1)
     stopifnot(is.numeric(age), length(age) == 1)
@@ -515,12 +582,14 @@ Person <- R6Class("Person", list(
     self$name <- name
     self$age <- age
   },
+  # Print method
   print = function(...) {
     cat("Person: \n")
     cat("  Name: ", self$name, "\n", sep = "")
     cat("  Age:  ", self$age, "\n", sep = "")
     invisible(self)
   },
+  # Another method
   add_years = function(x) {
     self$age <- self$age + x 
     invisible(self)
@@ -531,6 +600,7 @@ nils <- Person$new("Nils", age = "thirty-three")
 nils <- Person$new("Nils", age = 33)
 
 nils$print()
+# In place operation
 nils$add_years(10)
 nils$print()
 nils$age
@@ -542,7 +612,16 @@ nils$
 
 ## Common pitfalls
 
-Vector recycling
+In the last chapter, I wanted to highlight a few common pitfalls when analysing
+data in R.
+
+### Vector recycling
+
+For some reason, vector recycling is possible in R. Issues commonly arise
+when using a logical vector for subsetting. In the following example a vector
+of length 3 is recycled when subsetting a much larger data.frame without throwing 
+an error. Please make sure that the logical vector always has the same length
+of the object that you want to subset.
 
 ```{r}
 dim(iris)
@@ -554,7 +633,9 @@ cur_vector <- iris$Species == "virginica"
 dim(iris[cur_vector,])
 ```
 
-the `drop` argument
+It is important to understand that the `.drop` or `drop` argument exists in R.
+When using tidy R most often missing combinations of factor levels are
+dropped by default:
 
 ```{r}
 iris$subspecies <- factor(rep(letters[1:5], each = 30))
@@ -564,7 +645,9 @@ iris %>% count(Species, subspecies)
 iris %>% count(Species, subspecies, .drop = FALSE)
 ```
 
-use `return`
+When writing functions, make sure to always explicitely return an object
+with `return`. Otherwise the output of the last call within the function will
+be returned.
 
 ```{r}
 out <- lapply(1:10, function(x){
