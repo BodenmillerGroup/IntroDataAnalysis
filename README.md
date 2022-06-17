@@ -19,7 +19,7 @@ These sessions should not replace university courses and might not contain all r
 ## Hosting instructions via Github Pages
 
 Always the HTML file of the newest session can be placed as `index.html` to the root of the repository.
-It will be rendered at [bodenmillergroup.github.io/IntroDataAnalysis](bodenmillergroup.github.io/IntroDataAnalysis).
+It will be rendered at [bodenmillergroup.github.io/IntroDataAnalysis](https://bodenmillergroup.github.io/IntroDataAnalysis/).
 
 ## Contributors
 
